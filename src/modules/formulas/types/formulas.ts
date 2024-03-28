@@ -24,7 +24,6 @@ export interface IComplexCondition {
 
 export interface IConditionalFormula {
 	name: string;
-
 	fields?: FormulaFields;
 	formula: IComplexCondition | string;
 	conditions?: IConditionalField[];

@@ -1,5 +1,5 @@
 const basic = { name: 'formula1', formula: 'totalGraphic * netGraphic + 1' };
-const generalCondition = {
+const multipleCondition = {
 	name: 'formula2',
 	formula: {
 		base: 'discountPercentGraphic * discountAuthorGraphic',
@@ -11,7 +11,7 @@ const generalCondition = {
 	},
 };
 
-const hasValueCondition = {
+const valueCondition = {
 	name: 'formula3',
 	formula: {
 		fields: 'country',
@@ -27,7 +27,7 @@ const hasValueCondition = {
 		],
 	},
 };
-const observers = [basic, generalCondition];
+const observers = [basic, multipleCondition, valueCondition];
 export const formulasForm = {
 	name: 'formulas-form',
 	title: 'Formulas Form',

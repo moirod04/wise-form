@@ -12,6 +12,7 @@ export function Wrapper({ data }) {
 				baseWrapper: Wrapper,
 				appInput: AppInput,
 			}}
+			name={data.settings.name}
 			settings={data.settings}
 		/>
 	);

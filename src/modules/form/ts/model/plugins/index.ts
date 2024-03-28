@@ -1,7 +1,7 @@
 import { parse } from 'mathjs';
 import { ReactiveModel } from '@beyond-js/reactive/model';
 import type { FormModel } from '../model';
-import { FormulaManager, Lexer, Parser, Token } from '@bgroup/wise-form/formulas';
+import { FormulaManager } from '@bgroup/wise-form/formulas';
 import type { FormField } from '../field';
 export class PluginsManager extends ReactiveModel<PluginsManager> {
 	#plugins: Record<string, any> = {};
@@ -49,7 +49,7 @@ export class PluginsManager extends ReactiveModel<PluginsManager> {
 		const methods = {
 			basic: this.validateBasic,
 			'base-conditional': this.validateBaseConditional,
-			'multiple-conditions': this.multipleConditions,
+			'value-conditions': this.validateConditionPerValue,
 		};
 
 		if (!methods[formula.type]) {
@@ -98,11 +98,10 @@ export class PluginsManager extends ReactiveModel<PluginsManager> {
 		if (formulaManager.base && formulaManager.fields) {
 			console.log('formulaManager base con condicion general');
 		}
+
 		const listener = field => {
 			const values = fields.map(field => field.value);
-
 			const formula = formulaManager.evaluateConditions(values);
-			console.log('formula a aplicar', formula);
 			const params = {};
 			formula.tokens
 				.filter(token => token.type === 'variable')
@@ -119,37 +118,15 @@ export class PluginsManager extends ReactiveModel<PluginsManager> {
 			field.on('change', listener);
 		});
 	}
-	processConditionalFormula(name: string) {
+	validateConditionPerValue(name: string) {
 		const formulaManager = this.#formulas[name];
 
 		const fields = formulaManager.fields.map(name => this.#model.getField(name));
-
-		if (formulaManager.base && formulaManager.fields) {
-			console.log('formulaManager base con condicion general');
-		}
 		const listener = field => {
-			const manager = formulaManager.evaluateConditions(field.value);
-
-			if (manager) {
-				// find the fields to be used in the formula
-				const variables = {};
-				manager.tokens.forEach(token => {
-					if (token.type !== 'variable') return;
-					const field = this.#model.getField(token.value);
-					if (!field) {
-						throw new Error(`Field ${token.value} not found in form ${this.#model.name}`);
-					}
-					variables[token.value] = field.value;
-				});
-			}
+			const result = formulaManager.evaluateConditionPerValue(field.value);
 		};
-		fields.forEach(field => {
-			if (!field) {
-				throw new Error(`Field ${name} not found in form ${this.#model.name}`);
-			}
 
-			field.on('change', listener);
-		});
+		fields.forEach(item => item.on('change', listener));
 	}
 	static validate(form: FormModel) {
 		if (!form.settings.observers) return;

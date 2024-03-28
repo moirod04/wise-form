@@ -72,7 +72,7 @@ export /*bundle */ class FormulaManager {
 		if (typeof this.#specs.formula === 'string') return 'basic';
 		const { formula } = this.#specs;
 		if (formula.base && formula.conditions) return 'base-conditional';
-		if (!formula.base && formula.conditions) return 'multiple-conditions';
+		if (!formula.base && formula.conditions) return 'value-conditions';
 	}
 	processConditional() {
 		const formula = <IComplexCondition>this.formula;
@@ -109,6 +109,23 @@ export /*bundle */ class FormulaManager {
 		});
 
 		return apply;
+	}
+
+	evaluateConditionPerValue(value) {
+		let formula = undefined;
+		this.conditions.forEach(item => {
+			const { condition, values } = item;
+			if (!condition) {
+				throw new Error('the formula per value must contain a condition property in the condition`s item');
+			}
+			if (!values) {
+				throw new Error('the formula per value must contain a values property in the condition`s item');
+			}
+			const index = values.findIndex(item => EvaluationsManager.validate(condition, value, item.value));
+			if (!!index) formula = this.getParser(values[index]);
+		});
+		console.log(22, formula);
+		return formula;
 	}
 
 	private getParser(data) {
