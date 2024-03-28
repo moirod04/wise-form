@@ -70,6 +70,10 @@ class WrappedFormModel extends ReactiveModel<WrappedFormModel> {
 
 	// Reference to the parent FormModel or WrappedFormModel.
 	#parent: FormModel | WrappedFormModel;
+	#specs;
+	get specs() {
+		return this.#specs;
+	}
 	constructor({ parent, settings, specs }: IWrapperFormModelProps) {
 		const { properties, ...props } = specs;
 		super({
@@ -103,6 +107,8 @@ class WrappedFormModel extends ReactiveModel<WrappedFormModel> {
 		await this.#checkReady();
 		this.#configFields();
 		this.ready = true;
+		this.#specs = settings;
+		this.set(settings);
 	};
 
 	/**

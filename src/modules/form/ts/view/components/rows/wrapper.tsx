@@ -22,5 +22,5 @@ export function FormSectionWrapper({ data, model }) {
 	const wrapperModel = model?.getField(data.name);
 	const Control = types[data.control];
 	// data = wrapperModel ? { ...data, ...wrapperModel.getProperties() } : data;
-	return <Control data={data} model={wrapperModel} />;
+	return <Control model={wrapperModel} />;
 }
