@@ -78,6 +78,12 @@ export class FormField extends ReactiveModel<IFormField> {
 				...properties,
 			],
 		});
+		function generarNumeroAleatorio() {
+			return Math.floor(Math.random() * (1000000 - 10000 + 1)) + 10000;
+		}
+
+		this.__instanceID = `${specs.name}.${generarNumeroAleatorio()}`;
+
 		this.#specs = specs;
 		this.#parent = parent;
 		this.__instance = Math.random();
@@ -155,5 +161,40 @@ export class FormField extends ReactiveModel<IFormField> {
 	cleanUp() {
 		this.#listeningItems.forEach(({ item, listener }) => item.off('change', listener));
 		// todo: remove all events
+	}
+
+	/**
+	 * The `set` method sets one or more properties on the model.
+	 *
+	 *
+	 * This method overwrites the original reactiveModel set to pass the object as param
+	 * when the change event is fired.
+	 * Eventually this method will be removed and the original set method will be used, but
+	 * it requires an upgrade in the reactive model package.
+	 * @param {keyof ReactiveModelPublic<T>} property - The name of the property to set.
+	 * @param {*} value - The value to set the property to.
+	 * @returns {void}
+	 */
+	set(properties): void {
+		let updated = false;
+		try {
+			Object.keys(properties).forEach(prop => {
+				if (!this.properties || !this.properties.includes(prop)) return;
+				const sameObject =
+					typeof properties[prop] === 'object' &&
+					JSON.stringify(properties[prop]) === JSON.stringify(this[prop]);
+
+				if (this[prop] === properties[prop] || sameObject) return;
+				const descriptor = Object.getOwnPropertyDescriptor(this, prop);
+				if (descriptor?.set) return;
+
+				this[prop] = properties[prop];
+				updated = true;
+			});
+		} catch (e) {
+			throw new Error(`Error setting properties: ${e}`);
+		} finally {
+			if (updated) this.trigger('change', this);
+		}
 	}
 }

@@ -1,7 +1,7 @@
 {
 	"packages": [
 		"/src/package.json",
-		"/docs/package.json",
+		"/test/package.json",
 		"../pragmate-ui/library/package.json",
 		"../reactive-model/library/package.json"
 	]

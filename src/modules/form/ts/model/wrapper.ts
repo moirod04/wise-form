@@ -247,6 +247,7 @@ class WrappedFormModel extends ReactiveModel<WrappedFormModel> {
 			console.error('Field not found', name, this.#settings.name, this.#fields.keys());
 			return;
 		}
+
 		this.getField(name).set({ value });
 	}
 

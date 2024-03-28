@@ -179,7 +179,9 @@ class FormModel extends BaseWiseModel {
 		this.wrappers.set(wrapper.name, wrapper);
 	};
 
-	setField = (name: string, value) => this.fields.get(name).set({ value });
+	setField = (name: string, value) => {
+		this.fields.get(name).set({ value });
+	};
 
 	/**
 	 * Retrieves a field or wrapper instance by its name. If the name includes a dot notation, it attempts to find a nested field within a wrapper.

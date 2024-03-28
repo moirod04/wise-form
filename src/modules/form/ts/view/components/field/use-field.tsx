@@ -7,9 +7,7 @@ export function useField(model, field) {
 
 	const value = fieldModel?.value ?? values[field?.name];
 	const [attributes, setAttributes] = React.useState(fieldModel?.attributes);
-    const onChange = event => {
-		model.setField(field.name, event.target.value);
-	};
+	const onChange = event => model.setField(field.name, event.target.value);
 	React.useEffect(() => {
 		if (!fieldModel) return;
 		const onChange = () => {
