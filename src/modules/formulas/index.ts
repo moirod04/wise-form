@@ -4,6 +4,11 @@ import { Parser } from './helpers/parser';
 import { Token } from './helpers/token';
 import { IComplexCondition, IConditionalFormula, FormulaObserver } from './types/formulas';
 
+type ParserData = {
+	parser: Parser;
+	tokens: Token[];
+	[key: string]: any;
+};
 export /*bundle */ class FormulaManager {
 	private static instances: Map<string, any> = new Map();
 	#lexer = new Lexer();
@@ -54,6 +59,8 @@ export /*bundle */ class FormulaManager {
 
 		return formula.base;
 	}
+
+	#parsers: Map<string, ParserData> = new Map();
 	constructor(specs) {
 		this.#specs = specs;
 		this.#start();
@@ -113,6 +120,9 @@ export /*bundle */ class FormulaManager {
 
 	evaluateConditionPerValue(value) {
 		let formula = undefined;
+		if ([null, undefined].includes(value)) {
+			return;
+		}
 		this.conditions.forEach(item => {
 			const { condition, values } = item;
 			if (!condition) {
@@ -122,16 +132,21 @@ export /*bundle */ class FormulaManager {
 				throw new Error('the formula per value must contain a values property in the condition`s item');
 			}
 			const index = values.findIndex(item => EvaluationsManager.validate(condition, value, item.value));
-			if (!!index) formula = this.getParser(values[index]);
+
+			if (index > -1) formula = this.getParser(values[index]);
 		});
-		console.log(22, formula);
+
 		return formula;
 	}
 
-	private getParser(data) {
+	getParser(data): ParserData {
+		if (!data.formula) throw new Error('To get a parser you must provide a formula');
+		if (this.#parsers.has(data.formula)) return this.#parsers.get(data.formula);
 		const tokens = this.#lexer.tokenize(data.formula);
 		const parser = new Parser(tokens);
-		return { tokens, parser, ...data };
+		const result = { tokens, parser, ...data };
+		this.#parsers.set(data.formula, result);
+		return result;
 	}
 	static async create(specs) {
 		if (FormulaManager.instances.has(specs.name)) {

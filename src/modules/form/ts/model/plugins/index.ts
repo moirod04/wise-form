@@ -92,12 +92,7 @@ export class PluginsManager extends ReactiveModel<PluginsManager> {
 
 	validateBaseConditional(name) {
 		const formulaManager = this.#formulas[name];
-
 		const fields = formulaManager.fields.map(name => this.#model.getField(name));
-
-		if (formulaManager.base && formulaManager.fields) {
-			console.log('formulaManager base con condicion general');
-		}
 
 		const listener = field => {
 			const values = fields.map(field => field.value);
@@ -105,7 +100,7 @@ export class PluginsManager extends ReactiveModel<PluginsManager> {
 			const params = {};
 			formula.tokens
 				.filter(token => token.type === 'variable')
-				.forEach(token => (params[token.value] = this.#model.getField(token.value).value));
+				.forEach(token => (params[token.value] = this.#model.getField(token.value).value ?? 0));
 			const result = parse(formula.formula).evaluate(params);
 			const formulaField = this.#model.getField(name);
 			if (formulaField) formulaField.set({ value: result });
@@ -120,13 +115,48 @@ export class PluginsManager extends ReactiveModel<PluginsManager> {
 	}
 	validateConditionPerValue(name: string) {
 		const formulaManager = this.#formulas[name];
+		const fields = new Set<string>();
+		const mainFields = formulaManager.fields.map(name => this.#model.getField(name));
 
-		const fields = formulaManager.fields.map(name => this.#model.getField(name));
+		/**
+		 * The method will iterate over the conditions to get the parser for each value
+		 * and get access to the fields that are part of the formula and be able to evaluate it
+		 * changes.
+		 */
+		formulaManager.conditions.forEach(condition => {
+			if (!condition.condition) {
+				throw new Error('the formula per value must contain a condition property in the condition`s item');
+			}
+			if (!condition.values) {
+				throw new Error('the formula per value must contain a values property in the condition`s item');
+			}
+
+			const parsers = condition.values.map(item => formulaManager.getParser(item));
+
+			parsers.forEach(parser => {
+				parser.tokens.filter(token => token.type === 'variable').forEach(token => fields.add(token.value));
+			});
+			fields.forEach(field => {});
+		});
 		const listener = field => {
-			const result = formulaManager.evaluateConditionPerValue(field.value);
-		};
+			const formula = formulaManager.evaluateConditionPerValue(field.value);
+			if (!formula) return;
+			const params = {};
 
-		fields.forEach(item => item.on('change', listener));
+			formula.tokens
+				.filter(token => token.type === 'variable')
+				.forEach(token => (params[token.value] = this.#model.getField(token.value).value ?? 0));
+			const result = parse(formula.formula).evaluate(params);
+			const formulaField = this.#model.getField(name);
+			if (formulaField) formulaField.set({ value: result });
+		};
+		const listenerSecondaries = () => mainFields.forEach(field => listener(field));
+
+		fields.forEach(field => {
+			const model = this.#model.getField(field);
+			if (model) model.on('change', listenerSecondaries);
+		});
+		mainFields.forEach(item => item.on('change', listener));
 	}
 	static validate(form: FormModel) {
 		if (!form.settings.observers) return;
