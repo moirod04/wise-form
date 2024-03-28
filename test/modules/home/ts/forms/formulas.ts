@@ -10,6 +10,7 @@ const generalCondition = {
 		],
 	},
 };
+
 const hasValueCondition = {
 	name: 'formula3',
 	formula: {
@@ -39,7 +40,7 @@ export const formulasForm = {
 		{
 			type: 'wrapper',
 			template: {
-				structure: ['1x5'],
+				structure: ['1', '1x2', '1x2'],
 				gap: '3rem',
 			},
 			control: 'baseWrapper',
@@ -91,23 +92,24 @@ export const formulasForm = {
 			fields: [
 				{
 					name: 'totalDigital',
-					label: 'Total digital',
+					label: 'totalDigital',
 					type: 'text',
 				},
 				{
 					name: 'netDigital',
+					label: 'netDigital',
 					type: 'text',
 					required: true,
-					label: 'Total neto digital',
 				},
 				{
 					name: 'discountPercentDigital',
-					label: '% de descuento digital',
+					label: 'discountPercentDigital',
 					type: 'text',
 				},
 				{
 					name: 'discountAuthorDigital',
-					label: 'Porcentaje de autor digital',
+					label: 'discountAuthorDigital',
+
 					type: 'text',
 				},
 			],

@@ -82,30 +82,29 @@ export /*bundle */ class FormulaManager {
 		this.#conditions = formula.conditions;
 	}
 
-	evaluateConditions(value) {
-		let apply;
+	evaluateConditions(values) {
+		/**
+		 The apply variable represent the final formula that will be applied
+		 The method will iterate over the conditions and apply the last one that is true.
+		 */
+		let apply = this.base;
+
+		if (typeof values === 'string') values = [values];
+		values = values.filter(value => ![undefined, null, ''].includes(value));
+		if (values.length === 0) {
+			return apply;
+		}
 
 		this.conditions.forEach(item => {
 			if (item.condition) {
-				const { values, condition } = item;
-				//is a general condition
-				if (condition === 'hasValue') {
-					return;
-				}
+				const { value, condition } = item;
 
-				if (!Array.isArray(item.values)) {
-					throw new Error(
-						'If the condition has a general condition value, the property values must be exists and specify a formula per value',
-					);
-				}
+				const found = !!values.find(current => {
+					const result = EvaluationsManager.validate(condition, current, value);
+					return result;
+				});
 
-				const found = values.find(({ value: comparisonValue }) =>
-					EvaluationsManager.validate(condition, value, comparisonValue),
-				);
-
-				if (found) apply = this.getParser(found);
-
-				return;
+				if (found) apply = this.getParser(item);
 			}
 		});
 

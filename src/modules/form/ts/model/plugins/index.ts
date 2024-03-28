@@ -99,20 +99,17 @@ export class PluginsManager extends ReactiveModel<PluginsManager> {
 			console.log('formulaManager base con condicion general');
 		}
 		const listener = field => {
-			const manager = formulaManager.evaluateConditions(field.value);
+			const values = fields.map(field => field.value);
 
-			if (manager) {
-				// find the fields to be used in the formula
-				const variables = {};
-				manager.tokens.forEach(token => {
-					if (token.type !== 'variable') return;
-					const field = this.#model.getField(token.value);
-					if (!field) {
-						throw new Error(`Field ${token.value} not found in form ${this.#model.name}`);
-					}
-					variables[token.value] = field.value;
-				});
-			}
+			const formula = formulaManager.evaluateConditions(values);
+			console.log('formula a aplicar', formula);
+			const params = {};
+			formula.tokens
+				.filter(token => token.type === 'variable')
+				.forEach(token => (params[token.value] = this.#model.getField(token.value).value));
+			const result = parse(formula.formula).evaluate(params);
+			const formulaField = this.#model.getField(name);
+			if (formulaField) formulaField.set({ value: result });
 		};
 		fields.forEach(field => {
 			if (!field) {
