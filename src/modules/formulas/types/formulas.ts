@@ -4,7 +4,7 @@ export interface ISimpleFormula {
 }
 
 export interface IFormulaCondition {
-	condition: 'hasValue' | 'upper' | 'lower' | 'equal' | 'different' | 'between';
+	condition: 'hasValue' | 'upper' | 'lower' | 'equal' | 'different' | 'between' | 'lessOrEqual' | 'greaterOrEqual';
 	value?: string | number | [number, number];
 	formula: string;
 }

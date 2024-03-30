@@ -1,87 +1,91 @@
-# How it works.
+# Plugin de Fórmulas para WiseForm
 
-Las formulas se ejcutan por medio de la observacion de eventos en los campos del formulario, cada vez que uno de los
-campos implicados en la formula cambia, esta se ejecuta y recalcula.
+## Configuración de Observers
 
-Pueden existir distintos tipos de formula
+La implementación de fórmulas dinámicas es una característica central del Plugin de Fórmulas para WiseForm, ofreciendo a los desarrolladores la capacidad de realizar cálculos automáticos y validaciones que responden en tiempo real a las interacciones de los usuarios con el formulario. Los observers juegan un papel crucial en este proceso, monitoreando cambios en los campos del formulario y aplicando lógicas de cálculo y validación específicas según sea necesario.
 
-1. Formula simple
+### Utilidad para Fórmulas
 
-La formula simple es una operación mátematica aplicada sobre distintos campos del formulario
+Mediante el uso de observers, este plugin permite:
 
-su estructura es la siguiente:
+- Realizar cálculos automáticos basados en la entrada del usuario.
+- Aplicar validaciones dinámicas según el contexto del formulario.
+- Mejorar la experiencia del usuario con retroalimentación instantánea.
 
-```
-{ name: 'formula1', formula: 'totalGraphic * netGraphic + 1' };
-```
+### Configuración de Observers
 
-En este caso, el Manager de formulas se limita a identificar los campos, suscribirse a los cambios y ejecutar el calculo
-ante cada cambio.
+Los observers admiten diversas configuraciones, permitiendo una amplia gama de aplicaciones:
 
-2. Formula `base-conditional`
+#### Fórmulas Simples
 
-Implica que existe una formula simple, del primer tipo pero que bajo determinadas condiciones debe entonces aplicarse
-una nueva formula. En este escenario, la definición puede ser la siguiente:
+Para cálculos directos sin condiciones:
 
-```
+```json
 {
-	name: 'formula2',
-	formula: {
-		base: 'discountPercentGraphic * discountAuthorGraphic',
-		fields: ['totalGraphic', 'netGraphic', 'discountPercentGraphic', 'discountAuthorGraphic'],
-		conditions: [
-			{ condition: 'hasValue', formula: 'totalGraphic * discountAuthorGraphic' },
-			{ upper: 5, formula: 'totalGraphic * discountAuthorGraphic + 10' },
-		],
-	},
-};
-```
-
-Para esto, el Manager realiza en primer lugar, la misma lógica que con las formulas simples, pero además, se suscribirá
-a los campos especificados en fields, en caso de que exista algún cambio en algun campo definido en la propiedad
-`fields` entonces, el Manager, recorrerá las condiciones a ver si alguna de estas aplica y reemplazará la formula base
-por la que aplique.
-
-La propiedad condition, recibe un arreglo de objetos de tipo `IFormulaCondition`.
-
-```
-export interface IFormulaCondition {
-	condition: 'hasValue' | 'upper' | 'lower' | 'equal' | 'different' | 'between';
-	value?: string | number | [number, number];
-	formula: string;
+  "formula": "totalGraphic * netGraphic + 1",
+  "name": "formula1"
 }
 ```
 
-3. Condición según valor
+#### Fórmulas con Condiciones en Múltiples Campos
 
-Se utiliza para casos en los que se necesita implementar una formula según el valor de un campo. Para esto, la formula
-debe tener especificada la propiedad "fields" con el campo indicado. Posteriormente, se puede configurar el arreglo de
-valores, el cual recibe un objeto de tipo `IFormulaCondition` como el siguiente:
+Para aplicar fórmulas específicas bajo ciertas condiciones:
 
-```ts
-{ value: '0', formula: 'discountPercentGraphic + netGraphic' },
+```json
+{
+  "formula": "discountPercentGraphic * discountAuthorGraphic",
+  "name": "formula2",
+  "conditions": [
+    {
+      "fields": ["totalGraphic", "netGraphic", "discountPercentGraphic", "discountAuthorGraphic"],
+      "conditions": [
+        { "condition": "hasValue", "formula": "totalGraphic * discountAuthorGraphic" },
+        { "upper": 5, "formula": "totalGraphic * discountAuthorGraphic + 10" }
+      ]
+    }
+  ]
+}
 ```
 
-Siendo la estructura completa de la siguiente forma:
+#### Fórmulas Condicionales Basadas en el Valor de un Campo
 
-```ts
-const valueCondition = {
-	name: 'formula3',
-	formula: {
-		fields: 'country',
-		conditions: [
-			{
-				condition: 'equal',
-				values: [
-					{ value: '0', formula: 'discountPercentGraphic + netGraphic' },
-					{ value: '1', formula: 'totalGraphic * discountAuthorGraphic' },
-					{ value: '2', formula: 'totalDigital * netDigital' },
-				],
-			},
-		],
-	},
-};
+Para lógicas que requieren evaluación condicional:
+
+```json
+{
+  "name": "formula3",
+  "formula": {
+    "field": "country",
+    "conditions": [
+      { "equal": "0", "formula": "discountPercentGraphic + netGraphic" },
+      { "equal": "1", "formula": "totalGraphic * discountAuthorGraphic" },
+      { "equal": "2", "formula": "totalDigital * netDigital" }
+    ]
+  }
+}
 ```
 
-En este escenario, el analizador de formula wse encargara de validar el valor actual del campo especificado y aplicar la
-formula correspondiente.
+### Soporte para Tipos de Condiciones
+
+El plugin soporta una amplia variedad de condiciones, incluyendo:
+
+- `equal`: Evalúa igualdad con el valor dado.
+- `lower`: Comprueba si es menor que el valor proporcionado.
+- `upper`: Determina si es mayor que el valor especificado.
+- `between`: Verifica si está dentro de un rango de valores.
+- `different`: Evalúa si es diferente al valor dado.
+- `hasValue`: Comprueba si tiene algún valor.
+- `lessOrEqual`: Evalúa si es menor o igual que el valor dado.
+- `greaterOrEqual`: Determina si es mayor o igual que el valor especificado.
+
+## Cómo Funciona
+
+El Plugin de Fórmulas ejecuta cálculos observando eventos en los campos del formulario. Cuando un campo implicado en una fórmula cambia, ésta se recalcula automáticamente.
+
+### Tipos de Fórmulas
+
+1. **Fórmula Simple**: Opera directamente sobre los campos.
+2. **Fórmula Base-Conditional**: Aplica una nueva fórmula bajo ciertas condiciones.
+3. **Condición Según Valor**: Implementa una fórmula según el valor de un campo.
+
+Cada estructura proporcionada permite a los desarrolladores crear formularios interactivos que no solo capturan información sino que también la procesan inteligentemente, mejorando así la experiencia del usuario.

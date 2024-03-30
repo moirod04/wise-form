@@ -1,31 +1,26 @@
-## README for `wise-form` Library
+# Biblioteca `wise-form`
 
-## Introduction
+## Introducción
 
-`wise-form` is a React library designed to simplify the creation and management of forms in React applications. By
-utilizing JSON objects for form configuration, it offers a dynamic approach to form generation, including customizable
-structures, field ordering, and comprehensive validation mechanisms. The library now includes the `WrappedForm`
-component, enabling developers to organize form content within a `WiseForm` without using the traditional `<form>` tag,
-providing greater flexibility in form design and integration.
+`wise-form` es una biblioteca de gestión de formularios basada en modelos reactivos, diseñada para facilitar la
+creación, manejo y extensión de formularios dinámicos. Su finalidad es ofrecer a los desarrolladores la posibilidad de
+realizar implementaciones de formularios que puedan ser modificados a demanda, tanto desde el cliente como desde el
+backend, proporcionando así una gran flexibilidad y adaptabilidad. Esta biblioteca es independiente del framework de UI,
+permitiendo su integración con diversas bibliotecas o frameworks como React, Preact, Vue y Svelte.
 
-## Installation
+## Uso
 
-To add `wise-form` to your project, install it via npm:
+`wise-form` facilita dos métodos principales para trabajar con formularios:
 
-```bash
-npm install wise-form
-```
+### Configuración Directa con `WiseForm`
 
-## Usage
-
-### Basic Implementation
-
-Define a JSON object for your form's configuration. Below is an example structure for a contact form:
+Puedes definir la configuración de tu formulario como un objeto JSON y pasarla directamente al componente `WiseForm`:
 
 ```javascript
-// Form structure example
-export const form = {
-	name: 'Contact',
+import { WiseForm } from 'wise-form';
+
+export const formSettings = {
+	name: 'Contacto',
 	fields: [
 		{
 			name: 'email',
@@ -34,155 +29,68 @@ export const form = {
 			label: 'Email',
 			variant: 'floating',
 		},
-		// Add more fields as required
+		// Campos adicionales...
 	],
 };
+
+// Uso en un componente
+return <WiseForm settings={formSettings} />;
 ```
 
-### Rendering the Form
+### Implementación Avanzada con `FormModel`
 
-To render a form, import either `WiseForm` or `WrappedForm` from `wise-form` and pass your form configuration to it:
-
-```jsx
-import React from 'react';
-import { WiseForm, WrappedForm } from '@bgroup/wise-form';
-
-const MyComponent = () => {
-	return <WiseForm settings={form} />;
-	// Or use WrappedForm for a form without the <form> tag
-	// return <WrappedForm settings={form} />;
-};
-
-export default MyComponent;
-```
-
-## New Components
-
-### `WrappedForm`
-
-`WrappedForm` allows you to structure your form content within a `WiseForm` but without wrapping it inside a `<form>`
-element. This is particularly useful for integrating with other form management libraries or when the form tag is not
-desired.
-
-## Template Logic
-
-Both `WiseForm` and `WrappedForm` support a template logic to define the layout and grouping of form fields. This logic
-uses a template setting to determine how fields are distributed and displayed. The template configuration can include
-specific sizes, patterns, or distributions that are interpreted to organize the form fields into a coherent structure,
-enhancing the form's usability and visual appeal.
-
-### Understanding the `template` System in `wise-form`
-
-The `template` property in `wise-form` offers a flexible way to define the layout of your form. It controls how form
-fields are grouped and arranged into rows, providing a straightforward method to customize your form's structure to fit
-your UI requirements. This property can accept various configurations, including numbers, strings, and arrays, each
-dictating the layout differently. Here's how each variation works:
-
-1. **Number**: When the value is a simple number, it represents the number of fields or columns in that row. For
-   example, a value of `3` means the row will contain three fields.
-
-2. **String**: A string value is used to represent a repeated row structure. The format follows the pattern
-   `number x number`, where the first number specifies how many times the row structure will be repeated, and the second
-   number indicates the number of fields or columns in each of those rows. This allows for the easy repetition of
-   certain row structures across the form.
-
-3. **Array**: An array value provides the most customization, where the first element can be either a number or a string
-   (following the aforementioned logic), and the second element must be a string representing the CSS grid template for
-   each column within that row. This allows for precise control over the layout of each row, including the ability to
-   specify the size and distribution of fields or columns according to CSS grid conventions.
-
-#### Example Usage
-
-Let's look at a practical example to understand how these variations can be applied:
+Para mayor control y flexibilidad, puedes instanciar un `FormModel` y pasarlo a `WiseForm`. Este método es ideal para
+utilizar `wise-form` en distintos contextos o con diferentes frameworks de UI, permitiendo un manejo detallado de los
+comportamientos del formulario:
 
 ```javascript
-const formTemplate = [
-	2, // First row with 2 fields
-	'2x3', // Two rows, each with 3 fields
-	[3, '1fr 2fr 1fr'], // A single row with 3 fields, custom grid layout
-	['2x2', '1fr 1fr'], // Two rows, each with 2 fields, uniform grid layout
-];
-```
+import { WiseForm, FormModel } from 'wise-form';
 
--   The first element `2` indicates a single row with two fields.
--   The second element `"2x3"` specifies that there will be two rows, each containing three fields.
--   The third element `[3, "1fr 2fr 1fr"]` defines a single row with three fields, where the grid layout for each column
-    is specified as `1fr 2fr 1fr`, indicating the relative width of each field.
--   The fourth element `["2x2", "1fr 1fr"]` represents two rows, each with two fields, both applying a grid layout of
-    `1fr 1fr`, ensuring each field in the row takes up an equal amount of space.
-
-This `template` system enables developers to craft forms that are not only functional but also visually aligned with the
-application's design, ensuring a seamless user experience. By leveraging numbers, strings, and arrays, the `template`
-property provides the flexibility needed to create diverse and dynamic form layouts.
-
-## Features
-
--   **Dynamic Form Creation**: Create forms dynamically using JSON configuration.
--   **State Management**: Manage form states efficiently, including creation and editing phases.
--   **Variety of Field Types**: Support for various field types like text, email, checkbox, etc.
--   **Validation Handling**: Includes built-in validation logic and error management.
--   **Flexible Structure**: Offers flexibility in customizing the order and layout of form fields.
--   **Template Logic**: Utilize template settings for advanced field layout and grouping.
-
-## Best Practices
-
--   **Modularity**: Keep form definitions modular for easier updates and reuse.
--   **Validation Clarity**: Define clear validation rules within your form configurations for better user feedback.
--   **Robust Error Handling**: Implement detailed error handling to improve user interactions and form reliability.
-
-## Implementation Guide
-
-### Configuring Your Form
-
-Here is an example configuration for a login form:
-
-```javascript
-export const loginForm = {
-	name: 'login',
+export const formDefinition = {
+	name: 'Contacto',
 	fields: [
 		{
-			name: 'username',
-			type: 'text',
-			placeholder: 'Username',
+			name: 'email',
+			type: 'email',
 			required: true,
-			label: 'Username',
+			label: 'Email',
 			variant: 'floating',
 		},
-		{
-			name: 'password',
-			type: 'password',
-			placeholder: 'Enter your password',
-			required: true,
-			label: 'Password',
-			variant: 'floating',
-		},
+		// Campos adicionales...
 	],
 };
+
+const formModel = await FormModel.create(formDefinition);
+
+// Uso en un componente
+return <WiseForm formModel={formModel} />;
 ```
 
-### Implementing `WiseForm` or `WrappedForm`
+## Características
 
-Choose either `WiseForm` or `WrappedForm` for implementation, depending on your needs. Here's how to implement
-`WiseForm`:
+`wise-form` ofrece características destacadas para la creación de formularios:
 
-```jsx
-import { WiseForm } from '@bgroup/wise-form';
+-   **Creación Dinámica de Formularios**: Permite la creación de formularios mediante configuración JSON.
+-   **Modelos Reactivos**: Soporta una gestión integral del estado y el manejo de eventos, facilitando la reactividad en
+    los formularios.
+-   **Compatibilidad Amplia**: Diseñada para ser utilizada con múltiples bibliotecas/frameworks de UI, ampliando las
+    posibilidades de implementación.
+-   **Diseños Personalizables y Extensibles**: Proporciona herramientas para la personalización y extensión de
+    formularios, incluyendo la integración con plugins.
 
-<WiseForm
-	types={{
-		select: ReactSelect,
-		// other custom field types
-	}}
-	settings={loginForm}
-/>;
-```
+## Enlaces de Interés
 
-For `WrappedForm`, the implementation is similar but without the `<form>` tag encapsulation.
+-   [Agregar componentes al formulario](features/add-components.md)
+-   [Agregar callbacks](features/callbacks)
+-   [Plugins](plugins/index.md)
+-   [Plugin de fórmulas](plugins/formulas.md)
+-   [BaseModel](models/base)
+-   [WrapperFormModel](models/wrapper)
+-   [FormModel](modes/form)
+-   [FieldModel](modeles/field)
+-   [Componentes de WiseForm](ui/wise-form)
+-   [WrappedForm](ui/wrapped)
+-   [WiseFormContext](ui/context)
 
-## Contributing
-
-Contributions to `wise-form` are highly appreciated. Please refer to our contribution guidelines for more information.
-
-## License
-
-`wise-form` is licensed under the MIT License. For more details, see the LICENSE file.
+Con `wise-form`, los desarrolladores tienen una poderosa herramienta para construir formularios complejos y dinámicos,
+optimizando la experiencia de usuario y facilitando la gestión de datos de formulario de manera eficiente y flexible.

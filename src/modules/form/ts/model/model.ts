@@ -6,7 +6,7 @@ import { PluginsManager } from './plugins';
 export /*bundle*/
 class FormModel extends BaseWiseModel {
 	#childWrappers: number = 0;
-
+	#plugins: PluginsManager;
 	/**
 	 * Initializes a new instance of the `FormModel`, setting up the initial state, including field configurations,
 	 * callbacks, and reactive properties. This constructor also triggers the asynchronous setup process for the form.
@@ -32,7 +32,8 @@ class FormModel extends BaseWiseModel {
 
 		await this.#checkReady();
 		this.#configFields();
-		PluginsManager.validate(this);
+		// todo: @everyone Define if is required to wait for the plugins to be ready.
+		this.#plugins = new PluginsManager(this);
 		this.ready = true;
 		this.trigger('change');
 	};

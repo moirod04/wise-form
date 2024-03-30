@@ -94,7 +94,7 @@ export /*bundle */ class FormulaManager {
 		 The apply variable represent the final formula that will be applied
 		 The method will iterate over the conditions and apply the last one that is true.
 		 */
-		let apply = this.base;
+		let apply: string | ParserData = this.base;
 
 		if (typeof values === 'string') values = [values];
 		values = values.filter(value => ![undefined, null, ''].includes(value));
