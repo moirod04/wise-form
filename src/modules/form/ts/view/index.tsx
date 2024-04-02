@@ -10,6 +10,7 @@ import { Containers } from './components/containers';
 export /*bundle */ function WiseForm({ children, settings, types, model }: IWiseFormSpecs): JSX.Element {
 	const { ready, model: instance, type, styles, items } = useModel(settings, model);
 	const formTypes = useTypes(types);
+	console.log('SETTINGS => ', ready);
 
 	if (!ready) return null;
 
@@ -34,7 +35,7 @@ export /*bundle */ function WiseForm({ children, settings, types, model }: IWise
 
 	return (
 		<WiseFormContext.Provider value={value}>
-			<form className='reactive-form-container' onSubmit={onSubmit}>
+			<form className="reactive-form-container" onSubmit={onSubmit}>
 				<Containers />
 				{children}
 			</form>
