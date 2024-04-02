@@ -85,7 +85,7 @@ class FormModel extends BaseWiseModel {
 	 * @param {FormField|WrappedFormModel} instance - The field or wrapper instance to check for dependencies.
 	 */
 	#listenDependencies = instance => {
-		if (!instance?.dependentOn?.length) return;
+		if (!instance?.specs?.dependentOn?.length) return;
 
 		const checkField = item => {
 			const DEFAULT = {
@@ -109,7 +109,7 @@ class FormModel extends BaseWiseModel {
 			callback({ dependency, settings, field: instance, form: this });
 		};
 
-		instance.dependentOn.forEach(checkField);
+		instance?.specs?.dependentOn.forEach(checkField);
 	};
 
 	/**

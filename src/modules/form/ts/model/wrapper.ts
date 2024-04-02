@@ -206,7 +206,7 @@ class WrappedFormModel extends ReactiveModel<WrappedFormModel> {
 	 * @param {FormField | WrappedFormModel} instance - The field or nested wrapper instance to set dependencies for.
 	 */
 	#listenDependencies = instance => {
-		if (!instance?.dependentOn?.length) return;
+		if (!instance?.specs?.dependentOn?.length) return;
 
 		const checkField = item => {
 			const DEFAULT = {
@@ -231,7 +231,7 @@ class WrappedFormModel extends ReactiveModel<WrappedFormModel> {
 			callback({ dependency, settings, field: instance, form: this.#form });
 		};
 
-		instance.dependentOn.forEach(checkField);
+		instance?.specs?.dependentOn.forEach(checkField);
 	};
 
 	/**
