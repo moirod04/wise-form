@@ -127,7 +127,7 @@ class FormModel extends BaseWiseModel {
 		if (Array.isArray(item?.properties)) {
 			item?.properties.forEach(item => (externalValues[item.name] = item.value));
 		}
-		if (!globalThis.__types) globalThis.types = new Set();
+		if (!globalThis.__types) globalThis.__types = new Set();
 		globalThis.__types.add(item.type);
 		if (item.type === 'wrapper') return this.#getWrapper(item);
 		const instance = new FormField({

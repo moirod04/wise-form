@@ -125,7 +125,7 @@ class WrappedFormModel extends ReactiveModel<WrappedFormModel> {
 			item?.properties.forEach(item => (externalValues[item.name] = item.value));
 		}
 
-		if (!globalThis.__types) globalThis.types = new Set();
+		if (!globalThis.__types) globalThis.__types = new Set();
 		globalThis.__types.add(item.type);
 		if (item.type === 'wrapper') {
 			if (!item.fields) throw new Error(`Wrapper ${item.name} must have fields property`);
