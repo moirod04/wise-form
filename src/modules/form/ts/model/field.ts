@@ -75,6 +75,8 @@ export class FormField extends ReactiveModel<IFormField> {
 				'variant',
 				'value',
 				'options',
+				'className',
+				'checked',
 				...properties,
 			],
 		});
@@ -147,7 +149,7 @@ export class FormField extends ReactiveModel<IFormField> {
 				throw new Error(
 					`the field ${allValid} does not exist in the form ${
 						this.#parent.name
-					}, field passed in invalid settings of field "${this.name}"`,
+					}, field passed in invalid settings of field "${this.name}"`
 				);
 			}
 

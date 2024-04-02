@@ -70,6 +70,10 @@ class WrappedFormModel extends ReactiveModel<WrappedFormModel> {
 
 	// Reference to the parent FormModel or WrappedFormModel.
 	#parent: FormModel | WrappedFormModel;
+	#specs;
+	get specs() {
+		return this.#specs;
+	}
 	constructor({ parent, settings, specs }: IWrapperFormModelProps) {
 		const { properties, ...props } = specs;
 		super({
@@ -103,6 +107,8 @@ class WrappedFormModel extends ReactiveModel<WrappedFormModel> {
 		await this.#checkReady();
 		this.#configFields();
 		this.ready = true;
+		this.#specs = settings;
+		this.set(settings);
 	};
 
 	/**
@@ -200,7 +206,7 @@ class WrappedFormModel extends ReactiveModel<WrappedFormModel> {
 	 * @param {FormField | WrappedFormModel} instance - The field or nested wrapper instance to set dependencies for.
 	 */
 	#listenDependencies = instance => {
-		if (!instance?.dependentOn?.length) return;
+		if (!instance?.specs?.dependentOn?.length) return;
 
 		const checkField = item => {
 			const DEFAULT = {
@@ -225,7 +231,7 @@ class WrappedFormModel extends ReactiveModel<WrappedFormModel> {
 			callback({ dependency, settings, field: instance, form: this.#form });
 		};
 
-		instance.dependentOn.forEach(checkField);
+		instance?.specs?.dependentOn.forEach(checkField);
 	};
 
 	/**

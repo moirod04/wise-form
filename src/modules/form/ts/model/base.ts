@@ -41,6 +41,7 @@ export class BaseWiseModel extends ReactiveModel<BaseWiseModel> {
 		});
 		return data;
 	}
+
 	protected loadedPromise: PendingPromise<boolean> = new PendingPromise();
 	protected childWrappersReady: number = 0;
 

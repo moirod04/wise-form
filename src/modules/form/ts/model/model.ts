@@ -6,6 +6,12 @@ import { PluginsManager } from './plugins';
 export /*bundle*/
 class FormModel extends BaseWiseModel {
 	#childWrappers: number = 0;
+
+	#specs;
+	get specs() {
+		return this.#specs;
+	}
+
 	#plugins: PluginsManager;
 	/**
 	 * Initializes a new instance of the `FormModel`, setting up the initial state, including field configurations,
@@ -35,6 +41,7 @@ class FormModel extends BaseWiseModel {
 		// todo: @everyone Define if is required to wait for the plugins to be ready.
 		this.#plugins = new PluginsManager(this);
 		this.ready = true;
+		this.#specs = settings;
 		this.trigger('change');
 	};
 
@@ -80,7 +87,7 @@ class FormModel extends BaseWiseModel {
 	 * @param {FormField|WrappedFormModel} instance - The field or wrapper instance to check for dependencies.
 	 */
 	#listenDependencies = instance => {
-		if (!instance?.dependentOn?.length) return;
+		if (!instance?.specs?.dependentOn?.length) return;
 
 		const checkField = item => {
 			const DEFAULT = {
@@ -104,7 +111,7 @@ class FormModel extends BaseWiseModel {
 			callback({ dependency, settings, field: instance, form: this });
 		};
 
-		instance.dependentOn.forEach(checkField);
+		instance?.specs?.dependentOn.forEach(checkField);
 	};
 
 	/**
