@@ -72,8 +72,6 @@ export class FormulaComparison {
 	}
 
 	calculate() {
-		const models = this.#parent.getModels(this.#specs.fields);
-
 		let applied = this.evaluate();
 		if (!applied) {
 			// any formula apply, so we need to reset the value
@@ -87,13 +85,10 @@ export class FormulaComparison {
 		const formulaString = this.#specs.formula.conditions[applied.name];
 		const formula = this.#parent.getParser({ formula: formulaString });
 		const variables = formula.tokens.filter(token => token.type === 'variable').map(item => item.value);
-
 		const params = this.#parent.getParams(variables);
-		// {discountPercentGraphic: 50, discountAuthorGraphic: 0}
-		//'discountPercentGraphic * discountAuthorGraphic'
 		const result = parse(formula.formula).evaluate(params);
 		this.#value = result;
-		console.log('el valor mayor es', this.#value);
+
 		return this.#value;
 	}
 
