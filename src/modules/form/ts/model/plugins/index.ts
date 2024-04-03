@@ -7,6 +7,9 @@ export class PluginsManager extends ReactiveModel<PluginsManager> {
 
 	private static items: Map<string, any> = new Map();
 	#instances = new Map<string, IPluginForm>();
+	get instances() {
+		return this.#instances;
+	};
 	static formulas: Record<string, any> = {};
 	#model: FormModel;
 	constructor(model) {
@@ -31,8 +34,8 @@ export class PluginsManager extends ReactiveModel<PluginsManager> {
 		const installed = results
 			.filter(result => result.status === 'fulfilled')
 			.map(result => (result as PromiseFulfilledResult<any>).value);
-		
-			const failed = results.filter(result => result.status === 'rejected');
+
+		const failed = results.filter(result => result.status === 'rejected');
 		if (failed.length) {
 			console.warn('Failed to install plugins', failed);
 		}

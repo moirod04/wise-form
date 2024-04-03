@@ -55,10 +55,15 @@ export class FormulaBasic {
 		const variables = this.#tokens.filter(token => token.type === 'variable').map(item => item.value);
 		this.#variables = variables;
 		const models = this.#parent.getModels(variables);
-		models.forEach(model => model.on('change', this.calculate.bind(this)));
+		models.forEach(model => {
+			if ([undefined].includes(model)) {
+				return;
+			}
+			model.on('change', this.calculate.bind(this))
+		});
 	}
 
-	evaluate(values) {}
+	evaluate(values) { }
 
 	calculate() {
 		const variables = this.#variables;

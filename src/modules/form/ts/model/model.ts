@@ -4,7 +4,7 @@ import { BaseWiseModel } from './base';
 import { PluginsManager } from './plugins';
 
 export /*bundle*/
-class FormModel extends BaseWiseModel {
+	class FormModel extends BaseWiseModel {
 	#childWrappers: number = 0;
 
 	#specs;
@@ -13,6 +13,9 @@ class FormModel extends BaseWiseModel {
 	}
 
 	#plugins: PluginsManager;
+	get plugins() {
+		return this.#plugins
+	}
 	/**
 	 * Initializes a new instance of the `FormModel`, setting up the initial state, including field configurations,
 	 * callbacks, and reactive properties. This constructor also triggers the asynchronous setup process for the form.
