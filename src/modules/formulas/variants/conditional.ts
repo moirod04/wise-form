@@ -44,7 +44,6 @@ export class FormulaConditional {
 		this.#parent = parent;
 		this.#plugin = plugin;
 		this.#specs = specs;
-		this.initialize();
 	}
 
 	initialize() {

@@ -13,6 +13,9 @@ class FormModel extends BaseWiseModel {
 	}
 
 	#plugins: PluginsManager;
+	get plugins() {
+		return this.#plugins;
+	}
 	/**
 	 * Initializes a new instance of the `FormModel`, setting up the initial state, including field configurations,
 	 * callbacks, and reactive properties. This constructor also triggers the asynchronous setup process for the form.
@@ -25,7 +28,6 @@ class FormModel extends BaseWiseModel {
 		this.#startup(settings);
 		if (!globalThis._wiseForms) globalThis._wiseForms = [];
 		globalThis._wiseForms.push(this);
-		console.log(5);
 	}
 
 	#startup = async settings => {

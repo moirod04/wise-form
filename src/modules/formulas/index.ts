@@ -111,6 +111,9 @@ export /*bundle */ class FormulaManager {
 		this.#value = value;
 	}
 
+	initialize() {
+		this.#instance.initialize();
+	}
 	getModels(variables) {
 		return variables.map(name => {
 			if (this.#plugin.formulas.has(name)) return this.#plugin.formulas.get(name);
