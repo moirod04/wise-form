@@ -58,19 +58,23 @@ export class FormulaComparison {
 		models.forEach(model => model.on('change', this.calculate.bind(this)));
 	}
 
-	evaluate(values) {}
-
-	calculate() {
+	evaluate() {
 		const models = this.#parent.getModels(this.#specs.fields);
 		const condition = this.#specs.formula.condition;
-
 		let applied;
-		console.log(99, models);
 		switch (condition) {
 			case 'upper':
 				applied = this.calculateUpper(models);
 				break;
 		}
+
+		return applied;
+	}
+
+	calculate() {
+		const models = this.#parent.getModels(this.#specs.fields);
+
+		let applied = this.evaluate();
 		if (!applied) {
 			// any formula apply, so we need to reset the value
 			this.#value = 0;
@@ -85,9 +89,11 @@ export class FormulaComparison {
 		const variables = formula.tokens.filter(token => token.type === 'variable').map(item => item.value);
 
 		const params = this.#parent.getParams(variables);
+		// {discountPercentGraphic: 50, discountAuthorGraphic: 0}
+		//'discountPercentGraphic * discountAuthorGraphic'
 		const result = parse(formula.formula).evaluate(params);
 		this.#value = result;
-
+		console.log('el valor mayor es', this.#value);
 		return this.#value;
 	}
 
