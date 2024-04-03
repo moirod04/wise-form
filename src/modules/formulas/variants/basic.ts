@@ -57,8 +57,6 @@ export class FormulaBasic {
 		models.forEach(model => model.on('change', this.calculate.bind(this)));
 	}
 
-	evaluate(values) {}
-
 	calculate() {
 		const variables = this.#variables;
 		const formulaField = this.#plugin.form.getField(this.name);

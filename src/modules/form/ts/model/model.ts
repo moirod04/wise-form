@@ -23,6 +23,9 @@ class FormModel extends BaseWiseModel {
 	constructor(settings, reactiveProps?) {
 		super(settings, reactiveProps);
 		this.#startup(settings);
+		if (!globalThis._wiseForms) globalThis._wiseForms = [];
+		globalThis._wiseForms.push(this);
+		console.log(5);
 	}
 
 	#startup = async settings => {
