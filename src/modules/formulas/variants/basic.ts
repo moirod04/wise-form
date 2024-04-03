@@ -58,7 +58,7 @@ export class FormulaBasic {
 			if ([undefined].includes(model)) {
 				return;
 			}
-			model.on('change', this.calculate.bind(this))
+			model.on('change', this.calculate.bind(this));
 		});
 	}
 
@@ -67,9 +67,17 @@ export class FormulaBasic {
 		const formulaField = this.#plugin.form.getField(this.name);
 		const params = this.#parent.getParams(variables);
 		const models = this.#parent.getModels(variables);
+		const empty = (models as any[]).every(model => [null, undefined, ''].includes(model.value));
+		if (empty) {
+			// If all models are empty, set the input to empty if exists.
+			if (formulaField) formulaField.set({ value: '' });
+			this.#value = undefined;
+			return;
+		}
 		models.forEach(field => (params[field.name] = field.value ?? 0));
 
 		const result = parse(this.formula as string).evaluate(params);
+		this.#value = result;
 
 		if (formulaField) formulaField.set({ value: result });
 	}

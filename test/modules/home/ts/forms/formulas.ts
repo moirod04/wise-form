@@ -45,7 +45,7 @@ const valueCondition = {
 };
 
 const form = [];
-const observers = [valueCondition, formula10, comparison];
+const observers = [basic, valueCondition, formula10, comparison];
 export const formulasForm = {
 	name: 'formulas-form',
 	title: 'Formulas Form',
