@@ -103,7 +103,7 @@ export /*bundle */ class FormulaManager {
 		if (!objects[this.type]) {
 			throw new Error(`this type ${this.type} not found`);
 		}
-		console.log(22, 'instanciaremos', this.type);
+
 		this.#instance = new objects[this.type](this, this.#plugin, this.#specs);
 	}
 	set({ value }) {

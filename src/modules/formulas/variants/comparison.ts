@@ -50,7 +50,6 @@ export class FormulaComparison {
 	}
 
 	initialize() {
-		console.log(99, this.#specs);
 		if (!Array.isArray(this.#specs.fields)) {
 			throw new Error('The fields property must be an array');
 		}
@@ -64,21 +63,21 @@ export class FormulaComparison {
 	calculate() {
 		const models = this.#parent.getModels(this.#specs.fields);
 		const condition = this.#specs.formula.condition;
-		const values = models.map(model => model.value);
 
 		let result = 0;
+		console.log(99, models);
 		switch (condition) {
 			case 'upper':
-				result = this.calculateUpper(values);
+				result = this.calculateUpper(models);
 				break;
 		}
-		console.log('el mayor es', result);
+		// this.#specs.conditions[result.name]
 	}
 
-	calculateUpper(values) {
-		let glue = 0;
-		values.forEach(item => {
-			if (Number(item) > Number(glue)) glue = Number(item);
+	calculateUpper(models) {
+		let glue;
+		models.forEach(item => {
+			if (Number(item.value) > Number(glue?.value)) glue = item;
 		});
 		return glue;
 	}

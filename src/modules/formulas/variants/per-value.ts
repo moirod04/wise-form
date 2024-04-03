@@ -92,7 +92,6 @@ export class FormulaPerValue {
 
 		if (!formula) return;
 		const variables = formula.tokens.filter(token => token.type === 'variable').map(item => item.value);
-		console.log(40, variables);
 		const params = this.#parent.getParams(variables);
 		const result = parse(formula.formula).evaluate(params);
 		const formulaField = form.getField(this.name);
