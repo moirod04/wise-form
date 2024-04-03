@@ -1,33 +1,51 @@
 const basic = { name: 'formula1', formula: 'totalGraphic * netGraphic + 1' };
-const multipleCondition = {
+const baseConditional = {
 	name: 'formula2',
 	formula: {
 		base: 'discountPercentGraphic * discountAuthorGraphic',
 		fields: ['totalGraphic', 'netGraphic', 'discountPercentGraphic', 'discountAuthorGraphic'],
 		conditions: [
 			{ condition: 'hasValue', formula: 'totalGraphic * discountAuthorGraphic' },
-			{ condition: 'upper', value: 5, formula: 'totalGraphic * discountAuthorGraphic + 10' },
+			{ condition: 'upper', value: 5, formula: 'totalGraphic * netGraphic + 1 + 10' },
 		],
 	},
 };
-
+const formula10 = {
+	name: 'formula10',
+	formula: '5*2',
+};
+const comparison = {
+	fields: ['totalGraphic', 'netGraphic'],
+	name: 'comparison',
+	type: 'comparison',
+	formula: {
+		condition: 'upper',
+		conditions: {
+			totalGraphic: '50 * 2',
+			netGraphic: 'netGraphic / 60',
+		},
+	},
+};
 const valueCondition = {
 	name: 'formula3',
+
 	formula: {
 		fields: 'country',
 		conditions: [
 			{
 				condition: 'equal',
 				values: [
-					{ value: '0', formula: 'discountPercentGraphic + netGraphic' },
+					{ value: '0', formula: 'formula10 + 50' },
 					{ value: '1', formula: 'totalGraphic * discountAuthorGraphic' },
-					{ value: '2', formula: 'totalDigital * netDigital' },
+					{ value: '2', formula: 'totalGraphic * netGraphic' },
 				],
 			},
 		],
 	},
 };
-const observers = [basic, multipleCondition, valueCondition];
+
+const form = [];
+const observers = [valueCondition, formula10, comparison];
 export const formulasForm = {
 	name: 'formulas-form',
 	title: 'Formulas Form',

@@ -1,7 +1,5 @@
 import { ReactiveModel } from '@beyond-js/reactive/model';
 import type { FormModel } from '../model';
-
-import type { FormField } from '../field';
 import { PLUGINS } from './plugins';
 import { IPluginForm } from '../types/plugins';
 export class PluginsManager extends ReactiveModel<PluginsManager> {
@@ -15,10 +13,10 @@ export class PluginsManager extends ReactiveModel<PluginsManager> {
 		super();
 		this.#model = model;
 		globalThis.f = model;
-		this.start();
+		this.initialize();
 	}
 
-	private async start() {
+	private async initialize() {
 		const plugins = Object.keys(PLUGINS);
 		const promises: Promise<IPluginForm>[] = [];
 
@@ -33,7 +31,8 @@ export class PluginsManager extends ReactiveModel<PluginsManager> {
 		const installed = results
 			.filter(result => result.status === 'fulfilled')
 			.map(result => (result as PromiseFulfilledResult<any>).value);
-		const failed = results.filter(result => result.status === 'rejected');
+		
+			const failed = results.filter(result => result.status === 'rejected');
 		if (failed.length) {
 			console.warn('Failed to install plugins', failed);
 		}

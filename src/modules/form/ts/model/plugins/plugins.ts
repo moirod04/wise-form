@@ -3,6 +3,5 @@ import { FormulaPlugin } from './formula';
 export const PLUGINS = {
 	formula: {
 		object: FormulaPlugin,
-		property: 'observers',
 	},
 };

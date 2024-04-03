@@ -1,9 +1,13 @@
+import { parse } from 'mathjs';
 import { EvaluationsManager } from './helpers/evaluations';
 import { Lexer } from './helpers/lexer';
 import { Parser } from './helpers/parser';
 import { Token } from './helpers/token';
-import { IComplexCondition, IConditionalFormula, FormulaObserver } from './types/formulas';
-
+import { IComplexCondition, IConditionalFormula, FormulaObserver, IFormulaType } from './types/formulas';
+import { FormulaBasic } from './variants/basic';
+import { FormulaConditional } from './variants/conditional';
+import { FormulaPerValue } from './variants/per-value';
+import { FormulaComparison } from './variants/comparison';
 type ParserData = {
 	parser: Parser;
 	tokens: Token[];
@@ -34,12 +38,15 @@ export /*bundle */ class FormulaManager {
 		return typeof this.#specs.formula === 'object';
 	}
 
-	#conditions = [];
 	get conditions() {
 		if (typeof this.#specs.formula === 'string') return;
-		return this.#conditions;
+		const formula = this.#specs.formula as IComplexCondition;
+		return formula.conditions;
 	}
 
+	/**
+	 *  Represents the fields defined in the plugin settings
+	 */
 	get fields() {
 		const formula = <IComplexCondition>this.formula;
 		return typeof formula?.fields === 'string' ? [formula?.fields] : formula?.fields;
@@ -56,87 +63,78 @@ export /*bundle */ class FormulaManager {
 
 	get base() {
 		const formula = <IComplexCondition>this.#specs.formula;
-
 		return formula.base;
 	}
 
+	#variables: string[] = [];
+	get variables() {
+		return this.#variables;
+	}
+
+	#value: string | number | undefined | 0;
+	get value() {
+		return this.#value;
+	}
+
+	set value(v) {
+		if (v === this.#value) return;
+		this.#value = v;
+	}
+
 	#parsers: Map<string, ParserData> = new Map();
-	constructor(specs) {
+	#plugin: any;
+	#instance: any;
+	constructor(plugin, specs) {
+		this.#plugin = plugin;
 		this.#specs = specs;
-		this.#start();
+		this.#initialize();
 	}
 
-	#start() {
+	#initialize() {
 		this.#type = this.getType();
-		if (typeof this.formula !== 'string') return this.processConditional();
 
-		const { tokens, parser } = this.getParser(this.#specs);
-		this.#tokens = tokens;
-		this.#parser = parser;
+		const objects = {
+			basic: FormulaBasic,
+			'base-conditional': FormulaConditional,
+			'value-conditions': FormulaPerValue,
+			comparison: FormulaComparison,
+		};
+
+		if (!objects[this.type]) {
+			throw new Error(`this type ${this.type} not found`);
+		}
+		console.log(22, 'instanciaremos', this.type);
+		this.#instance = new objects[this.type](this, this.#plugin, this.#specs);
+	}
+	set({ value }) {
+		this.#value = value;
 	}
 
-	private getType() {
-		if (typeof this.#specs.formula === 'string') return 'basic';
-		const { formula } = this.#specs;
-		if (formula.base && formula.conditions) return 'base-conditional';
-		if (!formula.base && formula.conditions) return 'value-conditions';
+	getModels(variables) {
+		return variables.map(name => {
+			if (this.#plugin.formulas.has(name)) return this.#plugin.formulas.get(name);
+			return this.#plugin.form.getField(name);
+		});
 	}
+
+	private getType(): IFormulaType {
+		const { type, formula } = this.#specs;
+		if (type) return type;
+		if (typeof formula === 'string') return 'basic';
+		if (formula.conditions) return formula.base ? 'base-conditional' : 'value-conditions';
+	}
+
 	processConditional() {
 		const formula = <IComplexCondition>this.formula;
 		if (this.base) {
 			this.#parsedBase = this.getParser({ formula: this.base });
 		}
-		this.#conditions = formula.conditions;
 	}
-
-	evaluateConditions(values) {
-		/**
-		 The apply variable represent the final formula that will be applied
-		 The method will iterate over the conditions and apply the last one that is true.
-		 */
-		let apply: string | ParserData = this.base;
-
-		if (typeof values === 'string') values = [values];
-		values = values.filter(value => ![undefined, null, ''].includes(value));
-		if (values.length === 0) {
-			return apply;
-		}
-
-		this.conditions.forEach(item => {
-			if (item.condition) {
-				const { value, condition } = item;
-
-				const found = !!values.find(current => {
-					const result = EvaluationsManager.validate(condition, current, value);
-					return result;
-				});
-
-				if (found) apply = this.getParser(item);
-			}
-		});
-
-		return apply;
-	}
-
-	evaluateConditionPerValue(value) {
-		let formula = undefined;
-		if ([null, undefined].includes(value)) {
-			return;
-		}
-		this.conditions.forEach(item => {
-			const { condition, values } = item;
-			if (!condition) {
-				throw new Error('the formula per value must contain a condition property in the condition`s item');
-			}
-			if (!values) {
-				throw new Error('the formula per value must contain a values property in the condition`s item');
-			}
-			const index = values.findIndex(item => EvaluationsManager.validate(condition, value, item.value));
-
-			if (index > -1) formula = this.getParser(values[index]);
-		});
-
-		return formula;
+	calculate(variables) {
+		const params = this.getParams(variables);
+		const models = this.getModels(variables);
+		const result = parse(this.formula as string).evaluate(params);
+		return result;
 	}
 
 	getParser(data): ParserData {
@@ -148,11 +146,37 @@ export /*bundle */ class FormulaManager {
 		this.#parsers.set(data.formula, result);
 		return result;
 	}
-	static async create(specs) {
+
+	getParams(variables: string[]) {
+		const params = {};
+		const { form, formulas } = this.#plugin;
+		const build = value => {
+			/**
+			 * the value could be a formula or a field
+			 */
+			const element = formulas.has(value) ? formulas.get(value) : form.getField(value);
+			if (!element)
+				throw new Error(`Field ${value} used in formula ${this.name}, not found in form ${form.name}, `);
+
+			params[value] = element.value ?? 0;
+		};
+		variables.forEach(build);
+
+		return params;
+	}
+
+	/**
+	 * A form can have multiple formulas, this method will create an instance of the formula manager
+	 * and memoize it to avoid creating multiple instances of the same formula.
+	 * @param specs
+	 * @returns
+	 */
+	static async create(plugin, specs) {
 		if (FormulaManager.instances.has(specs.name)) {
 			return FormulaManager.instances.get(specs.name);
 		}
-		const instance = new FormulaManager(specs);
+
+		const instance = new FormulaManager(plugin, specs);
 		FormulaManager.instances.set(specs.name, instance);
 		return instance;
 	}

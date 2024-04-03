@@ -52,14 +52,15 @@ export /*bundle */ class Lexer {
 	}
 
 	private determineTokenType(value: string): TokenType {
-		if (['+', '-', '*', '/'].includes(value)) {
-			return 'operator';
-		} else if (['(', ')'].includes(value)) {
-			return 'parenthesis';
-		} else if (!isNaN(parseFloat(value))) {
-			return 'number';
-		} else {
-			return 'variable';
-		}
+		const tokenTypes: Record<string, TokenType> = {
+			'+': 'operator',
+			'-': 'operator',
+			'*': 'operator',
+			'/': 'operator',
+			'(': 'parenthesis',
+			')': 'parenthesis',
+		};
+
+		return tokenTypes[value] || (!isNaN(parseFloat(value)) ? 'number' : 'variable');
 	}
 }
