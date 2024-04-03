@@ -39,7 +39,6 @@ export class FormulaPerValue {
 		this.#parent = parent;
 		this.#plugin = plugin;
 		this.#specs = specs;
-		this.initialize();
 	}
 
 	initialize() {
@@ -89,7 +88,7 @@ export class FormulaPerValue {
 	calculate(field) {
 		const { form } = this.#plugin;
 		const formula = this.evaluate(field.value);
-		
+
 		if (!formula) return;
 		const variables = formula.tokens.filter(token => token.type === 'variable').map(item => item.value);
 		const params = this.#parent.getParams(variables);
