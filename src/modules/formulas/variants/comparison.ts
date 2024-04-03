@@ -64,21 +64,39 @@ export class FormulaComparison {
 		const models = this.#parent.getModels(this.#specs.fields);
 		const condition = this.#specs.formula.condition;
 
-		let result = 0;
+		let applied;
 		console.log(99, models);
 		switch (condition) {
 			case 'upper':
-				result = this.calculateUpper(models);
+				applied = this.calculateUpper(models);
 				break;
 		}
-		// this.#specs.conditions[result.name]
+		if (!applied) {
+			// any formula apply, so we need to reset the value
+			this.#value = 0;
+			return;
+		}
+		/**
+		 * Get the formula analyzer
+		 */
+
+		const formulaString = this.#specs.formula.conditions[applied.name];
+		const formula = this.#parent.getParser({ formula: formulaString });
+		const variables = formula.tokens.filter(token => token.type === 'variable').map(item => item.value);
+
+		const params = this.#parent.getParams(variables);
+		const result = parse(formula.formula).evaluate(params);
+		this.#value = result;
+
+		return this.#value;
 	}
 
 	calculateUpper(models) {
 		let glue;
 		models.forEach(item => {
-			if (Number(item.value) > Number(glue?.value)) glue = item;
+			if (Number(item.value) > Number(glue?.value ?? 0)) glue = item;
 		});
+
 		return glue;
 	}
 }

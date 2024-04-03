@@ -73,6 +73,7 @@ export /*bundle */ class FormulaManager {
 
 	#value: string | number | undefined | 0;
 	get value() {
+		if (!this.#value) return this.calculate();
 		return this.#value;
 	}
 
@@ -130,13 +131,24 @@ export /*bundle */ class FormulaManager {
 			this.#parsedBase = this.getParser({ formula: this.base });
 		}
 	}
-	calculate(variables) {
+	calculate() {
+		if (this.#instance && this.#instance.calculate) this.#instance.calculate();
+		const formula = this.getParser({ formula: this.formula });
+		const variables = formula.tokens.filter(token => token.type === 'variable').map(item => item.value);
 		const params = this.getParams(variables);
 		const models = this.getModels(variables);
 		const result = parse(this.formula as string).evaluate(params);
 		return result;
 	}
 
+	/**
+	 * Returns the parser for the formula, if the parser is already created it will return the memoized parser
+	 *
+	 * The formula is tokenized and parsed to create a parser instance
+	 * the object returned contains the tokens, the parser and the formula
+	 * @param data Receives the formula to be parsed
+	 * @returns
+	 */
 	getParser(data): ParserData {
 		if (!data.formula) throw new Error('To get a parser you must provide a formula');
 		if (this.#parsers.has(data.formula)) return this.#parsers.get(data.formula);

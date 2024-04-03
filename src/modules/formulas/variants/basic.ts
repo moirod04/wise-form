@@ -66,6 +66,7 @@ export class FormulaBasic {
 		const params = this.#parent.getParams(variables);
 		const models = this.#parent.getModels(variables);
 		models.forEach(field => (params[field.name] = field.value ?? 0));
+
 		const result = parse(this.formula as string).evaluate(params);
 
 		if (formulaField) formulaField.set({ value: result });
