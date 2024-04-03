@@ -53,7 +53,9 @@ export class FormulaComparison {
 		if (!Array.isArray(this.#specs.fields)) {
 			throw new Error('The fields property must be an array');
 		}
+	}
 
+	start() {
 		const models = this.#parent.getModels(this.#specs.fields);
 		models.forEach(model => model.on('change', this.calculate.bind(this)));
 	}

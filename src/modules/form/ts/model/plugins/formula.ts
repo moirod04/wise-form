@@ -43,7 +43,9 @@ export class FormulaPlugin extends WiseFormPluginBase {
 
 	async init() {
 		if (!this.#form.settings?.observers) return;
-		this.#form.settings.observers.forEach(this.create.bind(this));
+		const promises = this.#form.settings.observers.map(this.create.bind(this));
+		Promise.all(promises);
+		this.#formulas.forEach(formula => formula.initialize());
 	}
 
 	async create(observer) {

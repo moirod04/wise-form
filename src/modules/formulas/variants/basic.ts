@@ -52,7 +52,7 @@ export class FormulaBasic {
 	initialize() {
 		const { tokens } = this.#parent.getParser(this.#specs);
 		this.#tokens = tokens;
-		const variables = tokens.filter(token => token.type === 'variable').map(item => item.value);
+		const variables = this.#tokens.filter(token => token.type === 'variable').map(item => item.value);
 		this.#variables = variables;
 		const models = this.#parent.getModels(variables);
 		models.forEach(model => model.on('change', this.calculate.bind(this)));
