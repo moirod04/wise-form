@@ -47,31 +47,38 @@ export class FormulaConditional {
 	}
 
 	initialize() {
-		const { form } = this.#plugin;
-		const fields = this.fields.map(name => form.getField(name));
-		this.#fields = fields;
-		const listener = () => {
-			const values = fields.map(field => field.value);
-			const formula = this.evaluate(values);
+		try {
+			const { form } = this.#plugin;
 
-			// todo: Review if this section can be replaced by formulaManager.variables property.
-			const { tokens } = this.#parent.getParser(formula);
-			const variables = tokens.filter(token => token.type === 'variable').map(item => item.value);
-			const params = this.#parent.getParams(variables);
-
-			this.#value = parse(formula.formula).evaluate(params);
-
-			if (this.#plugin.formulas.has(this.name)) this.#plugin.formulas.get(this.name).value = this.#value;
-
-			const model = this.#plugin.form.getField(this.name);
-			model && model.set({ value: this.#value });
-		};
-		fields.forEach(field => {
-			if (!field) {
-				throw new Error(`Field ${this.name} not found in form ${form.name}`);
+			if (!this.fields) {
+				console.log('settings in formula', this.name, this.#specs);
+				throw new Error(`Fields not found in formula ${this.name}`);
 			}
-			field.on('change', listener);
-		});
+			const fields = this.fields.map(name => form.getField(name));
+			this.#fields = fields;
+			const listener = () => {
+				const values = fields.map(field => field.value);
+				const formula = this.evaluate(values);
+
+				// todo: Review if this section can be replaced by formulaManager.variables property.
+				const { tokens } = this.#parent.getParser(formula);
+				const variables = tokens.filter(token => token.type === 'variable').map(item => item.value);
+				const params = this.#parent.getParams(variables);
+
+				this.#value = parse(formula.formula).evaluate(params);
+
+				if (this.#plugin.formulas.has(this.name)) this.#plugin.formulas.get(this.name).value = this.#value;
+
+				const model = this.#plugin.form.getField(this.name);
+				model && model.set({ value: this.#value });
+			};
+			fields.forEach(field => {
+				if (!field) {
+					throw new Error(`Field ${this.name} not found in form ${form.name}`);
+				}
+				field.on('change', listener);
+			});
+		} catch (e) {}
 	}
 
 	evaluate(values) {

@@ -1,5 +1,6 @@
 import { parse } from 'mathjs';
 import { EvaluationsManager } from './helpers/evaluations';
+import { ReactiveModel } from '@beyond-js/reactive/model';
 import { Lexer } from './helpers/lexer';
 import { Parser } from './helpers/parser';
 import { Token } from './helpers/token';
@@ -13,7 +14,7 @@ type ParserData = {
 	tokens: Token[];
 	[key: string]: any;
 };
-export /*bundle */ class FormulaManager {
+export /*bundle */ class FormulaManager extends ReactiveModel<FormulaManager> {
 	private static instances: Map<string, any> = new Map();
 	#lexer = new Lexer();
 
@@ -80,12 +81,14 @@ export /*bundle */ class FormulaManager {
 	set value(v) {
 		if (v === this.#value) return;
 		this.#value = v;
+		this.trigger('change');
 	}
 
 	#parsers: Map<string, ParserData> = new Map();
 	#plugin: any;
 	#instance: any;
 	constructor(plugin, specs) {
+		super();
 		this.#plugin = plugin;
 		this.#specs = specs;
 		this.#initialize();

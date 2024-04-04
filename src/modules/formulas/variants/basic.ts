@@ -58,6 +58,7 @@ export class FormulaBasic {
 			if ([undefined].includes(model)) {
 				return;
 			}
+			if (typeof model?.on !== 'function') console.log('model', model, model.on);
 			model.on('change', this.calculate.bind(this));
 		});
 	}
