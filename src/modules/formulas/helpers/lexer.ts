@@ -1,46 +1,36 @@
-import { Token } from './token';
 import { TokenType } from '../types';
+import { Token } from './token';
 
-/**
- * Lexical analyzer
- * The Lexer class has been updated to store the original string value of each parenthesis expression
- * and to correctly identify operator tokens.
- */
-export /*bundle */ class Lexer {
+export class Lexer {
 	private tokenRegex: RegExp = /\s*(\(|\)|\+|\-|\*|\/|\d+\.\d+|\d+|[A-Za-z_][A-Za-z0-9_]*)\s*/g;
 
 	tokenize(formula: string): Token[] {
-		this.tokenRegex.lastIndex = 0; // Reset regex state
+		this.tokenRegex.lastIndex = 0;
 		const tokens: Token[] = [];
-		const stack: Array<{ tokens: Token[]; stringValue: string }> = [{ tokens: [], stringValue: '' }]; // Stack to manage nested expressions
-		let m: RegExpExecArray | null;
+		const stack: Array<Token[]> = [tokens]; // Stack to manage nested token lists
+		let match: RegExpExecArray | null;
 
-		while ((m = this.tokenRegex.exec(formula)) !== null) {
-			let value = m[1];
-			let type: TokenType = this.determineTokenType(value);
+		while ((match = this.tokenRegex.exec(formula)) !== null) {
+			const tokenValue = match[1];
+			let tokenType: TokenType = this.determineTokenType(tokenValue);
 
-			if (type === 'parenthesis') {
-				if (value === '(') {
-					// Push a new object to the stack to hold the tokens for this subexpression
-					stack.push({ tokens: [], stringValue: '' });
+			if (tokenType === 'parenthesis') {
+				if (tokenValue === '(') {
+					// Start a new scope for tokens
+					stack.push([]);
 				} else {
-					// Pop the last object from the stack, which represents the completed subexpression
-					let subExpression = stack.pop();
-					if (!subExpression) {
+					// End the current scope
+					const subTokens = stack.pop();
+					if (!subTokens) {
 						throw new Error('Mismatched parentheses in the formula');
 					}
-					let stringValue = subExpression.stringValue;
-					let subExpressionTokens = subExpression.tokens;
-					// The full original string representation of the subexpression is captured in stringValue
-					let parenthesisToken = new Token('parenthesis', '()', stringValue, subExpressionTokens);
-					// Add the new parenthesis token to the current top of the stack
-					stack[stack.length - 1].tokens.push(parenthesisToken);
+					// Create a parenthesis token with these subtokens as children
+					const parentTokens = stack[stack.length - 1];
+					parentTokens.push(new Token('parenthesis', '()', null, subTokens));
 				}
 			} else {
-				// Add the new token to the current top of the stack and append the string value if it's a subexpression
-				let current = stack[stack.length - 1];
-				current.tokens.push(new Token(type, value));
-				current.stringValue += value;
+				// Add this token to the current scope
+				stack[stack.length - 1].push(new Token(tokenType, tokenValue));
 			}
 		}
 
@@ -48,11 +38,11 @@ export /*bundle */ class Lexer {
 			throw new Error('Mismatched parentheses in the formula');
 		}
 
-		return stack[0].tokens; // The first element in the stack is the array of tokens for the entire formula
+		return tokens; // Return the outermost list of tokens
 	}
 
 	private determineTokenType(value: string): TokenType {
-		const tokenTypes: Record<string, TokenType> = {
+		const operators = {
 			'+': 'operator',
 			'-': 'operator',
 			'*': 'operator',
@@ -60,7 +50,6 @@ export /*bundle */ class Lexer {
 			'(': 'parenthesis',
 			')': 'parenthesis',
 		};
-
-		return tokenTypes[value] || (!isNaN(parseFloat(value)) ? 'number' : 'variable');
+		return operators[value] || (!isNaN(parseFloat(value)) ? 'number' : 'variable');
 	}
 }

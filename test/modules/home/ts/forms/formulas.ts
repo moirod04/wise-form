@@ -83,6 +83,9 @@ export const formulasForm = {
 					name: 'netGraphic',
 					type: 'text',
 					required: true,
+					disabled: {
+						mode: 'create',
+					},
 					label: 'netGraphic',
 				},
 				{

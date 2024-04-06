@@ -16,6 +16,22 @@ class FormModel extends BaseWiseModel {
 	get plugins() {
 		return this.#plugins;
 	}
+
+	/**
+	 * since the fields can be children of the model or a
+	 * wrapper, this method is used to get the form model
+	 */
+	get form() {
+		return this;
+	}
+	#mode: string;
+	get mode() {
+		return this.#mode;
+	}
+	#update: boolean;
+	get update() {
+		return this.#update;
+	}
 	/**
 	 * Initializes a new instance of the `FormModel`, setting up the initial state, including field configurations,
 	 * callbacks, and reactive properties. This constructor also triggers the asynchronous setup process for the form.
@@ -28,6 +44,8 @@ class FormModel extends BaseWiseModel {
 		this.#startup(settings);
 		if (!globalThis._wiseForms) globalThis._wiseForms = [];
 		globalThis._wiseForms.push(this);
+		this.#update = settings.update;
+		this.#mode = this.#update ? 'update' : 'create';
 	}
 
 	#startup = async settings => {
@@ -232,6 +250,9 @@ class FormModel extends BaseWiseModel {
 		this.triggerEvent('clear');
 	};
 
+	getForm() {
+		return this;
+	}
 	static create = settings => {
 		const properties = settings.fields.map(item => item.name);
 		const values = settings.values || {};

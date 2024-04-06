@@ -62,7 +62,7 @@ export class FormField extends ReactiveModel<IFormField> {
 	 * @param {Object} params - Construction parameters including the parent form model and field specifications.
 	 */
 	constructor({ parent, specs }: { parent; specs: IFormFieldProps }) {
-		const { properties, ...props } = specs;
+		let { properties, ...props } = specs;
 
 		super({
 			...props,
@@ -89,7 +89,20 @@ export class FormField extends ReactiveModel<IFormField> {
 		this.#specs = specs;
 		this.#parent = parent;
 		this.__instance = Math.random();
-		this.set(props);
+
+		const toSet: Record<string, any> = {};
+		Object.keys(props).forEach(key => {
+			if (key === 'properties') return;
+			console.log(30, props[key]);
+			if (typeof props[key] === 'string' && props[key]?.includes('state:')) {
+				const state = props[key].split('state:')[1];
+				if (state === 'create' && !this.#parent.form.update) {
+					props[key] = true;
+				}
+			}
+			toSet[key] = props[key];
+		});
+		this.set(toSet);
 	}
 
 	/**
@@ -130,8 +143,16 @@ export class FormField extends ReactiveModel<IFormField> {
 			if (typeof props.disabled !== 'object') {
 				throw new Error(`The disabled property of the field ${props.name} must be a boolean or an object`);
 			}
-			if (!props.disabled.fields) {
-				throw new Error(`The disabled property of the field ${props.name} must have a fields property`);
+			if (!props.disabled.fields && !props.disabled.mode) {
+				throw new Error(
+					`The disabled property of the field ${props.name} must have a fields property or a mode defined`,
+				);
+			}
+			console.log(32, props.disabled.mode, this.#parent.form.mode);
+			if (props.disabled.mode) {
+				// posible modes : create, update;
+				this.#disabled = this.#parent.form.mode === props.disabled.mode;
+				return;
 			}
 
 			let allValid;
@@ -149,7 +170,7 @@ export class FormField extends ReactiveModel<IFormField> {
 				throw new Error(
 					`the field ${allValid} does not exist in the form ${
 						this.#parent.name
-					}, field passed in invalid settings of field "${this.name}"`
+					}, field passed in invalid settings of field "${this.name}"`,
 				);
 			}
 

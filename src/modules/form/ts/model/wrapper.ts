@@ -293,4 +293,8 @@ class WrappedFormModel extends ReactiveModel<WrappedFormModel> {
 	};
 
 	cleanUp = this.clear;
+
+	getForm() {
+		return this.#parent;
+	}
 }
