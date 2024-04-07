@@ -17,7 +17,7 @@ export class FormulaBasic {
 	}
 	#value: string | number | undefined | 0;
 	get value() {
-		return this.calculate();
+		return this.#value;
 	}
 	get name() {
 		return this.#specs.name;
@@ -75,11 +75,12 @@ export class FormulaBasic {
 			this.#value = undefined;
 			return;
 		}
+
 		models.forEach(field => (params[field.name] = field.value ?? 0));
 
 		const result = parse(this.formula as string).evaluate(params);
 		this.#value = result;
-
+		this.#parent.trigger('change');
 		if (formulaField) formulaField.set({ value: result });
 	}
 }

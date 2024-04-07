@@ -17,7 +17,7 @@ export class FormulaComparison {
 	}
 	#value: string | number | undefined | 0;
 	get value() {
-		return this.calculate();
+		return this.#value;
 	}
 	get name() {
 		return this.#specs.name;
@@ -88,7 +88,7 @@ export class FormulaComparison {
 		const params = this.#parent.getParams(variables);
 		const result = parse(formula.formula).evaluate(params);
 		this.#value = result;
-
+		this.#parent.trigger('change');
 		return this.#value;
 	}
 

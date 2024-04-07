@@ -12,7 +12,7 @@ export class FormulaPerValue {
 	}
 	#value: string | number | undefined | 0;
 	get value() {
-		return this.calculateAll();
+		return this.#value;
 	}
 	get name() {
 		return this.#specs.name;
@@ -99,8 +99,8 @@ export class FormulaPerValue {
 
 		const model = this.#plugin.form.getField(this.name);
 		model && model.set({ value: this.#value });
-
 		formulaField && formulaField.set({ value: result });
+		this.#parent.trigger('change');
 	}
 
 	evaluate(value) {

@@ -4,7 +4,7 @@ import type { Token } from '../helpers/token';
 export interface ISimpleFormula {
 	name: string;
 	formula: string;
-	type?: string;
+	type?: FormulaType;
 	fields?: FormulaFields;
 }
 
@@ -33,7 +33,7 @@ export interface IComplexCondition {
 
 export interface IConditionalFormula {
 	name: string;
-	type?: string;
+	type?: FormulaType;
 	fields?: FormulaFields;
 	formula: IComplexCondition | string;
 	conditions?: IConditionalField[];
@@ -45,6 +45,6 @@ export type ParserData = {
 	[key: string]: any;
 };
 
-export type IFormulaType = 'basic' | 'base-conditional' | 'value-conditions' | undefined;
+export type FormulaType = 'basic' | 'base-conditional' | 'value-conditions' | undefined;
 
 export type FormulaObserver = ISimpleFormula | IConditionalFormula;

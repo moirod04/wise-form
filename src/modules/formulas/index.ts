@@ -4,7 +4,7 @@ import { ReactiveModel } from '@beyond-js/reactive/model';
 import { Lexer } from './helpers/lexer';
 import { Parser } from './helpers/parser';
 import { Token } from './helpers/token';
-import { IComplexCondition, IConditionalFormula, FormulaObserver, IFormulaType } from './types/formulas';
+import { IComplexCondition, IConditionalFormula, FormulaObserver, FormulaType } from './types/formulas';
 import { FormulaBasic } from './variants/basic';
 import { FormulaConditional } from './variants/conditional';
 import { FormulaPerValue } from './variants/per-value';
@@ -74,14 +74,7 @@ export /*bundle */ class FormulaManager extends ReactiveModel<FormulaManager> {
 
 	#value: string | number | undefined | 0;
 	get value() {
-		if (!this.#value) return this.calculate();
-		return this.#value;
-	}
-
-	set value(v) {
-		if (v === this.#value) return;
-		this.#value = v;
-		this.trigger('change');
+		return this.#instance.value;
 	}
 
 	#parsers: Map<string, ParserData> = new Map();
@@ -117,14 +110,20 @@ export /*bundle */ class FormulaManager extends ReactiveModel<FormulaManager> {
 	initialize() {
 		this.#instance.initialize();
 	}
-	getModels(variables) {
+	/**
+	 * Returns the models that are part of the formula
+	 * The models could be fields or formulas
+	 * @param variables
+	 * @returns
+	 */
+	getModels(variables: string[]) {
 		return variables.map(name => {
 			if (this.#plugin.formulas.has(name)) return this.#plugin.formulas.get(name);
 			return this.#plugin.form.getField(name);
 		});
 	}
 
-	private getType(): IFormulaType {
+	private getType(): FormulaType {
 		const { type, formula } = this.#specs;
 		if (type) return type;
 		if (typeof formula === 'string') return 'basic';
@@ -138,17 +137,18 @@ export /*bundle */ class FormulaManager extends ReactiveModel<FormulaManager> {
 		}
 	}
 	calculate() {
-		if (this.#instance && this.#instance.calculate) this.#instance.calculate();
-		const formula = this.getParser({ formula: this.formula });
-		const variables = formula.tokens.filter(token => token.type === 'variable').map(item => item.value);
-		const params = this.getParams(variables);
-		const models = this.getModels(variables);
-		const result = parse(this.formula as string).evaluate(params);
-		return result;
+		if (!this.#instance || this.#instance.calculate) {
+			console.warn('No instance or calculate method found', this.#instance);
+		}
+		this.#instance.calculate();
+		console.log(0.3, 'disparo cambio');
+		this.trigger('change');
+		return;
 	}
 
 	/**
 	 * Returns the parser for the formula, if the parser is already created it will return the memoized parser
+	 *
 	 *
 	 * The formula is tokenized and parsed to create a parser instance
 	 * the object returned contains the tokens, the parser and the formula

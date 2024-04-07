@@ -15,7 +15,7 @@ export class FormulaConditional {
 	}
 	#value: string | number | undefined | 0;
 	get value() {
-		return this.calculate();
+		return this.#value;
 	}
 	get name() {
 		return this.#specs.name;
@@ -121,7 +121,7 @@ export class FormulaConditional {
 		const params = this.#parent.getParams(variables);
 
 		this.#value = parse(formula.formula).evaluate(params);
-
+		this.#parent.trigger('change');
 		if (this.#plugin.formulas.has(this.name)) this.#plugin.formulas.get(this.name).value = this.#value;
 
 		const model = this.#plugin.form.getField(this.name);
