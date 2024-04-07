@@ -16,7 +16,7 @@ type ParserData = {
 };
 export /*bundle */ class FormulaManager extends ReactiveModel<FormulaManager> {
 	private static instances: Map<string, any> = new Map();
-	#lexer = new Lexer();
+	#lexer = new Lexer(true);
 
 	#tokens: Token[];
 	get tokens() {

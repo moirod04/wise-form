@@ -93,7 +93,7 @@ export class FormField extends ReactiveModel<IFormField> {
 		const toSet: Record<string, any> = {};
 		Object.keys(props).forEach(key => {
 			if (key === 'properties') return;
-			console.log(30, props[key]);
+
 			if (typeof props[key] === 'string' && props[key]?.includes('state:')) {
 				const state = props[key].split('state:')[1];
 				if (state === 'create' && !this.#parent.form.update) {
@@ -148,7 +148,7 @@ export class FormField extends ReactiveModel<IFormField> {
 					`The disabled property of the field ${props.name} must have a fields property or a mode defined`,
 				);
 			}
-			console.log(32, props.disabled.mode, this.#parent.form.mode);
+			
 			if (props.disabled.mode) {
 				// posible modes : create, update;
 				this.#disabled = this.#parent.form.mode === props.disabled.mode;
