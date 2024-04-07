@@ -8,6 +8,7 @@ export class FormulaComparison {
 	#plugin: any;
 	#specs: FormulaObserver;
 	#tokens: Token[];
+	#emptyValue: undefined;
 	get formula() {
 		return this.#specs.formula;
 	}
@@ -87,7 +88,7 @@ export class FormulaComparison {
 		const variables = formula.tokens.filter(token => token.type === 'variable').map(item => item.value);
 		const params = this.#parent.getParams(variables);
 		const result = parse(formula.formula).evaluate(params);
-		this.#value = result;
+		this.#value = [-Infinity, Infinity, undefined, null, NaN].includes(result) ? this.#emptyValue : result;
 		this.#parent.trigger('change');
 		return this.#value;
 	}

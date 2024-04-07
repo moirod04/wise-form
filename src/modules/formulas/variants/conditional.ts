@@ -6,6 +6,7 @@ import { parse } from 'mathjs';
 export class FormulaConditional {
 	#plugin: any;
 	#specs: FormulaObserver;
+	#emptyValue: undefined;
 	get formula() {
 		return this.#specs.formula;
 	}
@@ -120,7 +121,8 @@ export class FormulaConditional {
 		const variables = tokens.filter(token => token.type === 'variable').map(item => item.value);
 		const params = this.#parent.getParams(variables);
 
-		this.#value = parse(formula.formula).evaluate(params);
+		const result = parse(formula.formula).evaluate(params);
+		this.#value = [-Infinity, Infinity, undefined, null, NaN].includes(result) ? this.#emptyValue : result;
 		this.#parent.trigger('change');
 		if (this.#plugin.formulas.has(this.name)) this.#plugin.formulas.get(this.name).value = this.#value;
 
