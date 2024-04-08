@@ -17,7 +17,7 @@ export interface IFormulaCondition {
 
 type FormulaFields = string | string[];
 export type EvaluatedFormula = { value?: string | number; formula: string; condition?: string };
-export interface IConditionalFormula {}
+export interface IConditionalFormula { }
 
 export interface IConditionalField {
 	field?: string | string[];
@@ -38,6 +38,7 @@ export interface IConditionalFormula {
 	fields?: FormulaFields;
 	formula: IComplexCondition | string;
 	conditions?: IConditionalField[];
+	emptyValue?: string | number
 }
 
 export type ParserData = {

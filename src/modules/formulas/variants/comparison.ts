@@ -9,7 +9,6 @@ export class FormulaComparison {
 	#specs: FormulaObserver;
 	#emptyValue: undefined;
 	#tokens: Token[];
-	#emptyValue: undefined;
 	get formula() {
 		return this.#specs.formula;
 	}
@@ -58,7 +57,7 @@ export class FormulaComparison {
 		models.forEach(model => model.on('change', this.calculate.bind(this)));
 	}
 
-	start() {}
+	start() { }
 
 	evaluate() {
 		const models = this.#parent.getModels(this.#specs.fields);

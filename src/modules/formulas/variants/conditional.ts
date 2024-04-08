@@ -7,7 +7,6 @@ export class FormulaConditional {
 	#plugin: any;
 	#specs: FormulaObserver;
 	#emptyValue: undefined;
-	#emptyValue: undefined;
 	get formula() {
 		return this.#specs.formula;
 	}
@@ -64,7 +63,7 @@ export class FormulaConditional {
 				}
 				field.on('change', this.calculate.bind(this));
 			});
-		} catch (e) {}
+		} catch (e) { }
 	}
 
 	evaluate(values) {

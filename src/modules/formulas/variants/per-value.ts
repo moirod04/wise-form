@@ -8,7 +8,6 @@ export class FormulaPerValue {
 	#plugin: any;
 	#emptyValue: undefined;
 	#specs: FormulaObserver;
-	#emptyValue: undefined | number | string;
 	get formula() {
 		return this.#specs.formula;
 	}
