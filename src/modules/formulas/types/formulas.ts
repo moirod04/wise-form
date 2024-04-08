@@ -5,6 +5,7 @@ export interface ISimpleFormula {
 	name: string;
 	formula: string;
 	type?: FormulaType;
+	emptyValue?: string | number;
 	fields?: FormulaFields;
 }
 

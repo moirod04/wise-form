@@ -7,6 +7,7 @@ export class FormulaConditional {
 	#plugin: any;
 	#specs: FormulaObserver;
 	#emptyValue: undefined;
+	#emptyValue: undefined;
 	get formula() {
 		return this.#specs.formula;
 	}

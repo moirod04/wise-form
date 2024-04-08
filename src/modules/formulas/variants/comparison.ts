@@ -9,6 +9,7 @@ export class FormulaComparison {
 	#specs: FormulaObserver;
 	#emptyValue: undefined;
 	#tokens: Token[];
+	#emptyValue: undefined;
 	get formula() {
 		return this.#specs.formula;
 	}

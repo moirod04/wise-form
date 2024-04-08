@@ -37,6 +37,7 @@ export class FormulaBasic {
 	}
 
 	#emptyValue: undefined;
+	#emptyValue: undefined;
 	#variables: string[] = [];
 	get variables() {
 		return this.#variables;
@@ -48,6 +49,7 @@ export class FormulaBasic {
 		this.#plugin = plugin;
 		this.#specs = specs;
 		if (this.#specs.emptyValue) this.#emptyValue = this.#specs.emptyValue;
+		if (this.#specs.emptyValue) this.#emptyValue = this.#specs.emptyValue;
 	}
 
 	initialize() {
@@ -57,6 +59,7 @@ export class FormulaBasic {
 		this.#variables = variables;
 		const models = this.#parent.getModels(variables);
 		models.forEach(model => {
+			console.log(0.2, this.name);
 			if ([undefined].includes(model)) {
 				return;
 			}
@@ -67,10 +70,12 @@ export class FormulaBasic {
 	}
 
 	calculate() {
+		console.log(0.3, 'calculamos');
 		const variables = this.#variables;
 		const formulaField = this.#plugin.form.getField(this.name);
 		let params = this.#parent.getParams(variables);
 		const models = this.#parent.getModels(variables);
+
 		const empty = (models as any[]).every(model => [null, undefined, ''].includes(model.value));
 		if (empty) {
 			// If all models are empty, set the input to empty if exists.

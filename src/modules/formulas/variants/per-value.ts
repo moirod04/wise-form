@@ -6,6 +6,7 @@ import { parse } from 'mathjs';
 
 export class FormulaPerValue {
 	#plugin: any;
+	#emptyValue: undefined;
 	#specs: FormulaObserver;
 	#emptyValue: undefined | number | string;
 	get formula() {
