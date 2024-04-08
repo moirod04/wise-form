@@ -36,6 +36,7 @@ export class FormulaBasic {
 		return formula.conditions;
 	}
 
+	#emptyValue: undefined;
 	#variables: string[] = [];
 	get variables() {
 		return this.#variables;
@@ -46,6 +47,7 @@ export class FormulaBasic {
 		this.#parent = parent;
 		this.#plugin = plugin;
 		this.#specs = specs;
+		if (this.#specs.emptyValue) this.#emptyValue = this.#specs.emptyValue;
 	}
 
 	initialize() {
@@ -59,6 +61,7 @@ export class FormulaBasic {
 				return;
 			}
 			if (typeof model?.on !== 'function') console.log('model', model, model.on);
+
 			model.on('change', this.calculate.bind(this));
 		});
 	}
@@ -66,7 +69,7 @@ export class FormulaBasic {
 	calculate() {
 		const variables = this.#variables;
 		const formulaField = this.#plugin.form.getField(this.name);
-		const params = this.#parent.getParams(variables);
+		let params = this.#parent.getParams(variables);
 		const models = this.#parent.getModels(variables);
 		const empty = (models as any[]).every(model => [null, undefined, ''].includes(model.value));
 		if (empty) {
@@ -76,11 +79,15 @@ export class FormulaBasic {
 			return;
 		}
 
-		models.forEach(field => (params[field.name] = field.value ?? 0));
-
-		const result = parse(this.formula as string).evaluate(params);
-		this.#value = result;
-		this.#parent.trigger('change');
-		if (formulaField) formulaField.set({ value: result });
+		try {
+			const result = models.length === 1 ? models[0].value : parse(this.formula as string).evaluate(params);
+			this.#value = [-Infinity, Infinity, undefined, null, NaN].includes(result) ? this.#emptyValue : result;
+			if (formulaField) formulaField.set({ value: result });
+			this.#parent.trigger('change');
+		} catch (e) {
+			console.log('formula', this.name, this.formula, params);
+			console.trace(e);
+			throw new Error(`Error calculating the formula: ${e.message}`);
+		}
 	}
 }

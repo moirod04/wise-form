@@ -6,6 +6,7 @@ import { parse } from 'mathjs';
 export class FormulaConditional {
 	#plugin: any;
 	#specs: FormulaObserver;
+	#emptyValue: undefined;
 	get formula() {
 		return this.#specs.formula;
 	}
@@ -51,32 +52,16 @@ export class FormulaConditional {
 			const { form } = this.#plugin;
 
 			if (!this.fields) {
-				console.log('settings in formula', this.name, this.#specs);
 				throw new Error(`Fields not found in formula ${this.name}`);
 			}
 			const fields = this.fields.map(name => form.getField(name));
 			this.#fields = fields;
-			const listener = () => {
-				const values = fields.map(field => field.value);
-				const formula = this.evaluate(values);
 
-				// todo: Review if this section can be replaced by formulaManager.variables property.
-				const { tokens } = this.#parent.getParser(formula);
-				const variables = tokens.filter(token => token.type === 'variable').map(item => item.value);
-				const params = this.#parent.getParams(variables);
-
-				this.#value = parse(formula.formula).evaluate(params);
-
-				if (this.#plugin.formulas.has(this.name)) this.#plugin.formulas.get(this.name).value = this.#value;
-
-				const model = this.#plugin.form.getField(this.name);
-				model && model.set({ value: this.#value });
-			};
 			fields.forEach(field => {
 				if (!field) {
 					throw new Error(`Field ${this.name} not found in form ${form.name}`);
 				}
-				field.on('change', listener);
+				field.on('change', this.calculate.bind(this));
 			});
 		} catch (e) {}
 	}
@@ -97,14 +82,18 @@ export class FormulaConditional {
 
 		this.conditions.forEach(item => {
 			if (item.condition) {
-				const { value, condition } = item as EvaluatedFormula;
+				let { value, condition } = item as EvaluatedFormula;
+				condition = 'empty' ? 'hasValue' : condition;
+				try {
+					const found = !!values.find(current => {
+						const result = EvaluationsManager.validate(condition, current, value);
+						return result;
+					});
 
-				const found = !!values.find(current => {
-					const result = EvaluationsManager.validate(condition, current, value);
-					return result;
-				});
-
-				if (found) apply = item as IConditionalField;
+					if (found) apply = item as IConditionalField;
+				} catch (e) {
+					console.warn('Error evaluating the condition in formula', this.name, item, e);
+				}
 			}
 		});
 
@@ -113,6 +102,10 @@ export class FormulaConditional {
 
 	calculate() {
 		const values = this.#fields.map(field => field.value);
+		/**
+		 * the formula is taken from the evaluate method since the conditions are evaluated there and
+		 * can change the formula to be applied
+		 */
 		const formula = this.evaluate(values);
 
 		// todo: Review if this section can be replaced by formulaManager.variables property.
@@ -120,12 +113,19 @@ export class FormulaConditional {
 		const variables = tokens.filter(token => token.type === 'variable').map(item => item.value);
 		const params = this.#parent.getParams(variables);
 
-		this.#value = parse(formula.formula).evaluate(params);
-		this.#parent.trigger('change');
-		if (this.#plugin.formulas.has(this.name)) this.#plugin.formulas.get(this.name).value = this.#value;
+		try {
+			const keys = Object.keys(params);
+			const result = keys.length === 1 ? params[keys[0]] : parse(formula.formula as string).evaluate(params);
+			this.#value = [-Infinity, Infinity, undefined, null, NaN].includes(result) ? this.#emptyValue : result;
+			this.#parent.trigger('change');
 
-		const model = this.#plugin.form.getField(this.name);
-		model && model.set({ value: this.#value });
-		return this.#value;
+			const model = this.#plugin.form.getField(this.name);
+			model && model.set({ value: this.#value });
+			return this.#value;
+		} catch (e) {
+			console.log('formula', this.name, formula.formula, params);
+			console.error(e);
+			throw new Error('Error calculating the formula');
+		}
 	}
 }

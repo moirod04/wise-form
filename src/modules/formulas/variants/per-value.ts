@@ -7,6 +7,7 @@ import { parse } from 'mathjs';
 export class FormulaPerValue {
 	#plugin: any;
 	#specs: FormulaObserver;
+	#emptyValue: undefined | number | string;
 	get formula() {
 		return this.#specs.formula;
 	}
@@ -90,17 +91,27 @@ export class FormulaPerValue {
 		const formula = this.evaluate(field.value);
 
 		if (!formula) return;
+
 		const variables = formula.tokens.filter(token => token.type === 'variable').map(item => item.value);
 		const params = this.#parent.getParams(variables);
-		const result = parse(formula.formula).evaluate(params);
 		const formulaField = form.getField(this.name);
-		this.#value = parse(formula.formula).evaluate(params);
-		if (this.#plugin.formulas.has(this.name)) this.#plugin.formulas.get(this.name).value = this.#value;
 
-		const model = this.#plugin.form.getField(this.name);
-		model && model.set({ value: this.#value });
-		formulaField && formulaField.set({ value: result });
-		this.#parent.trigger('change');
+		try {
+			const keys = Object.keys(params);
+			const result = keys.length === 1 ? params[keys[0]] : parse(formula.formula as string).evaluate(params);
+
+			this.#value = [-Infinity, Infinity, undefined, null, NaN].includes(result) ? this.#emptyValue : result;
+
+			const model = this.#plugin.form.getField(this.name);
+			model && model.set({ value: this.#value });
+
+			formulaField && formulaField.set({ value: result });
+			this.#parent.trigger('change');
+		} catch (e) {
+			console.log('formula', this.name, formula.formula, params);
+			console.log(e);
+			throw new Error('Error calculating the formula');
+		}
 	}
 
 	evaluate(value) {

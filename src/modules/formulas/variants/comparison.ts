@@ -7,6 +7,7 @@ import { number, parse } from 'mathjs';
 export class FormulaComparison {
 	#plugin: any;
 	#specs: FormulaObserver;
+	#emptyValue: undefined;
 	#tokens: Token[];
 	get formula() {
 		return this.#specs.formula;
@@ -86,10 +87,17 @@ export class FormulaComparison {
 		const formula = this.#parent.getParser({ formula: formulaString });
 		const variables = formula.tokens.filter(token => token.type === 'variable').map(item => item.value);
 		const params = this.#parent.getParams(variables);
-		const result = parse(formula.formula).evaluate(params);
-		this.#value = result;
-		this.#parent.trigger('change');
-		return this.#value;
+
+		try {
+			const keys = Object.keys(params);
+			const result = keys.length === 1 ? params[keys[0]] : parse(this.formula as string).evaluate(params);
+			this.#value = [-Infinity, Infinity, undefined, null, NaN].includes(result) ? this.#emptyValue : result;
+			this.#parent.trigger('change');
+			return this.#value;
+		} catch (e) {
+			console.log('formula', this.name, this.formula, params);
+			throw new Error('Error calculating the formula');
+		}
 	}
 
 	calculateUpper(models) {

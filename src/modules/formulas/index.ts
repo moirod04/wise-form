@@ -72,7 +72,6 @@ export /*bundle */ class FormulaManager extends ReactiveModel<FormulaManager> {
 		return this.#variables;
 	}
 
-	#value: string | number | undefined | 0;
 	get value() {
 		return this.#instance.value;
 	}
@@ -80,6 +79,7 @@ export /*bundle */ class FormulaManager extends ReactiveModel<FormulaManager> {
 	#parsers: Map<string, ParserData> = new Map();
 	#plugin: any;
 	#instance: any;
+
 	constructor(plugin, specs) {
 		super();
 		this.#plugin = plugin;
@@ -102,9 +102,6 @@ export /*bundle */ class FormulaManager extends ReactiveModel<FormulaManager> {
 		}
 
 		this.#instance = new objects[this.type](this, this.#plugin, this.#specs);
-	}
-	set({ value }) {
-		this.#value = value;
 	}
 
 	initialize() {
@@ -141,7 +138,7 @@ export /*bundle */ class FormulaManager extends ReactiveModel<FormulaManager> {
 			console.warn('No instance or calculate method found', this.#instance);
 		}
 		this.#instance.calculate();
-		console.log(0.3, 'disparo cambio');
+
 		this.trigger('change');
 		return;
 	}
@@ -161,6 +158,7 @@ export /*bundle */ class FormulaManager extends ReactiveModel<FormulaManager> {
 		const tokens = this.#lexer.tokenize(data.formula);
 		const parser = new Parser(tokens);
 		const result = { tokens, parser, ...data };
+
 		this.#parsers.set(data.formula, result);
 		return result;
 	}
@@ -176,7 +174,7 @@ export /*bundle */ class FormulaManager extends ReactiveModel<FormulaManager> {
 			if (!element)
 				throw new Error(`Field ${value} used in formula ${this.name}, not found in form ${form.name}, `);
 
-			params[value] = element.value ?? 0;
+			params[value] = [undefined, ''].includes(element.value) ? 0 : element.value;
 		};
 		variables.forEach(build);
 
