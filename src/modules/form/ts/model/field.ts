@@ -77,6 +77,7 @@ export class FormField extends ReactiveModel<IFormField> {
 				'options',
 				'className',
 				'checked',
+				'id',
 				...properties,
 			],
 		});
@@ -145,10 +146,10 @@ export class FormField extends ReactiveModel<IFormField> {
 			}
 			if (!props.disabled.fields && !props.disabled.mode) {
 				throw new Error(
-					`The disabled property of the field ${props.name} must have a fields property or a mode defined`,
+					`The disabled property of the field ${props.name} must have a fields property or a mode defined`
 				);
 			}
-			
+
 			if (props.disabled.mode) {
 				// posible modes : create, update;
 				this.#disabled = this.#parent.form.mode === props.disabled.mode;
@@ -170,7 +171,7 @@ export class FormField extends ReactiveModel<IFormField> {
 				throw new Error(
 					`the field ${allValid} does not exist in the form ${
 						this.#parent.name
-					}, field passed in invalid settings of field "${this.name}"`,
+					}, field passed in invalid settings of field "${this.name}"`
 				);
 			}
 
