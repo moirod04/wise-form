@@ -19,7 +19,7 @@ export /*bundle */ function WiseForm({ children, settings, types, model }: IWise
 
 	const onSubmit = (event: React.FormEvent) => {
 		event.preventDefault();
-		instance.onSubmit();
+		instance.onSubmit(event);
 	};
 
 	const value = {
@@ -34,7 +34,7 @@ export /*bundle */ function WiseForm({ children, settings, types, model }: IWise
 
 	return (
 		<WiseFormContext.Provider value={value}>
-			<form className='reactive-form-container' onSubmit={onSubmit}>
+			<form className="reactive-form-container" onSubmit={onSubmit}>
 				<Containers />
 				{children}
 			</form>
