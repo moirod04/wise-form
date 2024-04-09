@@ -1,10 +1,10 @@
 import React from 'react';
 import { WrappedForm } from '@bgroup/wise-form/form';
 
-export /*bundle*/ const Div = ({ data: { model, ...props } }) => {
+export /*bundle*/ const Div = props => {
 	return (
-		<div className=' separator'>
-			<WrappedForm settings={props} data={model} />
+		<div className=" separator">
+			<WrappedForm name={props.model.name} />
 		</div>
 	);
 };
