@@ -107,16 +107,20 @@ export class FormulaConditional {
 		 * can change the formula to be applied
 		 */
 		const formula = this.evaluate(values);
-
+		if (this.name === "cob1") console.log("formula ********", formula)
+		if (this.name === "cob1") console.log("values ********", values)
 		// todo: Review if this section can be replaced by formulaManager.variables property.
 		const { tokens } = this.#parent.getParser(formula);
 		const variables = tokens.filter(token => token.type === 'variable').map(item => item.value);
+		if (this.name === "cob1") console.log("variables ********", variables)
 		const params = this.#parent.getParams(variables);
-
+		if (this.name === "cob1") console.log("params ********", params)
 		try {
 			const keys = Object.keys(params);
 			const result = keys.length === 1 ? params[keys[0]] : parse(formula.formula as string).evaluate(params);
-			this.#value = [-Infinity, Infinity, undefined, null, NaN].includes(result) ? this.#emptyValue : result;
+			if (this.name === "cob1") console.log(5, result)
+
+			this.#value = [-Infinity, Infinity, undefined, null, NaN].includes(result) || typeof result === "object" ? this.#emptyValue : result;
 			this.#parent.trigger('change');
 
 			const model = this.#plugin.form.getField(this.name);
