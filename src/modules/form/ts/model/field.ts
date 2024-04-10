@@ -169,8 +169,7 @@ export class FormField extends ReactiveModel<IFormField> {
 
 			if (!allValid) {
 				throw new Error(
-					`the field ${allValid} does not exist in the form ${
-						this.#parent.name
+					`the field ${allValid} does not exist in the form ${this.#parent.name
 					}, field passed in invalid settings of field "${this.name}"`
 				);
 			}

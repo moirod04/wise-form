@@ -24,6 +24,8 @@ export interface IConditionalField {
 	condition?: string;
 	values?: [EvaluatedFormula];
 	conditions?: IFormulaCondition[];
+	fields?: string[];
+	formula?: string
 }
 
 export interface IComplexCondition {

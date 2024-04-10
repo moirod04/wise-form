@@ -24,7 +24,6 @@ export function Control({ field, index, model }: WiseFormFieldControlProps) {
 	const { formTypes } = useWiseFormContext();
 
 	const { attrs } = useField(model, field);
-	if (field.name === "totalInversion") console.log(1, attrs);
 	const types = {
 		...{
 			checkbox: SelectionField,

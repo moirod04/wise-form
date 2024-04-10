@@ -41,10 +41,13 @@ export class FormulaConditional {
 	#fields: any;
 
 	#parent: FormulaManager;
+
+	#round: boolean
 	constructor(parent, plugin, specs) {
 		this.#parent = parent;
 		this.#plugin = plugin;
 		this.#specs = specs;
+		this.#round = specs.round
 	}
 
 	initialize() {
@@ -66,61 +69,49 @@ export class FormulaConditional {
 		} catch (e) { }
 	}
 
-	evaluate(values) {
-		/**
-		 The apply variable represents the  formula to be applied
-		 The method will iterate over the conditions and set the last to the variable to return it
-		 */
-		let apply: { formula: string; name: string } | IConditionalField = { formula: this.base, name: this.name };
+	evaluate() {
 
-		if (typeof values === 'string') values = [values];
-		values = values.filter(value => ![undefined, null, ''].includes(value));
+		const formula = <IComplexCondition>this.#specs.formula;
+		let evaluatedFormula = { formula: formula.base }; // Utiliza la fórmula base por defecto
+		if (formula.conditions && formula.conditions.length > 0) {
+			for (const condition of formula.conditions) {
+				//	 Recopila los valores de los campos especificados en esta condición
+				const fieldValues = condition.fields.map(fieldName => {
+					const field = this.#fields.find(f => f.name === fieldName);
+					return field ? field.value : this.#emptyValue;
+				});
 
-		if (values.length === 0) {
-			return apply;
-		}
+				const conditionMet = EvaluationsManager.validateAny(condition.condition, fieldValues);
 
-		this.conditions.forEach(item => {
-			if (item.condition) {
-				let { value, condition } = item as EvaluatedFormula;
-				condition = 'empty' ? 'hasValue' : condition;
-				try {
-					const found = !!values.find(current => {
-						const result = EvaluationsManager.validate(condition, current, value);
-						return result;
-					});
-
-					if (found) apply = item as IConditionalField;
-				} catch (e) {
-					console.warn('Error evaluating the condition in formula', this.name, item, e);
+				if (conditionMet) {
+					evaluatedFormula = { formula: condition.formula };
+					break; // Si se cumple una condición, no es necesario evaluar las restantes
 				}
 			}
-		});
+		}
 
-		return apply;
+		return evaluatedFormula;
 	}
 
 	calculate() {
-		const values = this.#fields.map(field => field.value);
+
 		/**
 		 * the formula is taken from the evaluate method since the conditions are evaluated there and
 		 * can change the formula to be applied
 		 */
-		const formula = this.evaluate(values);
-		if (this.name === "cob1") console.log("formula ********", formula)
-		if (this.name === "cob1") console.log("values ********", values)
+		const formula = this.evaluate();
 		// todo: Review if this section can be replaced by formulaManager.variables property.
 		const { tokens } = this.#parent.getParser(formula);
 		const variables = tokens.filter(token => token.type === 'variable').map(item => item.value);
-		if (this.name === "cob1") console.log("variables ********", variables)
 		const params = this.#parent.getParams(variables);
-		if (this.name === "cob1") console.log("params ********", params)
 		try {
 			const keys = Object.keys(params);
-			const result = keys.length === 1 ? params[keys[0]] : parse(formula.formula as string).evaluate(params);
-			if (this.name === "cob1") console.log(5, result)
+			let result = keys.length === 1 ? params[keys[0]] : parse(formula.formula as string).evaluate(params);
+			const isInvalidResult = [-Infinity, Infinity, undefined, null, NaN].includes(result)
+			if (this.#round && !isInvalidResult) result = Math.round(result)
 
-			this.#value = [-Infinity, Infinity, undefined, null, NaN].includes(result) || typeof result === "object" ? this.#emptyValue : result;
+			this.#value = isInvalidResult || typeof result === "object" ? this.#emptyValue : Number(result.toFixed(2));
+
 			this.#parent.trigger('change');
 
 			const model = this.#plugin.form.getField(this.name);

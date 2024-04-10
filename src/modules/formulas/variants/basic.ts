@@ -40,13 +40,16 @@ export class FormulaBasic {
 	#variables: string[] = [];
 	get variables() {
 		return this.#variables;
-	}
+	};
+
+	#round: boolean
 
 	#parent: FormulaManager;
 	constructor(parent, plugin, specs) {
 		this.#parent = parent;
 		this.#plugin = plugin;
 		this.#specs = specs;
+		this.#round = specs.round
 		if (this.#specs.emptyValue) this.#emptyValue = this.#specs.emptyValue;
 	}
 
@@ -60,7 +63,6 @@ export class FormulaBasic {
 			if ([undefined].includes(model)) {
 				return;
 			}
-			if (typeof model?.on !== 'function') console.log('model', model, model.on);
 
 			model.on('change', this.calculate.bind(this));
 		});
@@ -68,10 +70,8 @@ export class FormulaBasic {
 
 	calculate() {
 		const variables = this.#variables;
-		if (this.name === "cob1") console.log(0.3, 'calculamos', variables);
 
 		const formulaField = this.#plugin.form.getField(this.name);
-		if (this.name === "cob1") console.log(0.4, 'formulaField', formulaField);
 
 		let params = this.#parent.getParams(variables);
 		const models = this.#parent.getModels(variables);
@@ -85,12 +85,12 @@ export class FormulaBasic {
 		}
 		Object.entries(params).forEach(([key, value]: any[]) => {
 			params[key] = !!value && typeof value === "string" && value.includes("%") ? value.replaceAll('%', '').replaceAll('.', '*').replaceAll(',', '.').replaceAll('*', ',') : value
-
 		})
 		try {
-			const result = models.length === 1 ? models[0].value : parse(this.formula as string).evaluate(params);
-			if (this.name === "cob1") console.log(0.4, 'result', result);
-			this.#value = [-Infinity, Infinity, undefined, null, NaN].includes(result) ? this.#emptyValue : result;
+			let result = models.length === 1 ? models[0].value : parse(this.formula as string).evaluate(params);
+			const isInvalidResult = [-Infinity, Infinity, undefined, null, NaN].includes(result)
+			if (this.#round && !isInvalidResult) result = Math.round(result)
+			this.#value = isInvalidResult ? this.#emptyValue : Number(result.toFixed(2));;
 			if (formulaField) formulaField.set({ value: this.#value });
 			this.#parent.trigger('change');
 		} catch (e) {
