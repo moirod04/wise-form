@@ -38,7 +38,7 @@ function Main(): JSX.Element {
 			<h1>{title}</h1>
 			{/* @ts-ignore */}
 			<WiseForm types={types} model={active}>
-				<Button type='submit' variant='primary'>
+				<Button type="submit" variant="primary">
 					Enviar
 				</Button>
 			</WiseForm>
