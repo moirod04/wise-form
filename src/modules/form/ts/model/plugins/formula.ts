@@ -49,6 +49,7 @@ export class FormulaPlugin extends WiseFormPluginBase {
 			this.#formulas.set(formula.name, formula);
 		});
 		this.#formulas.forEach(formula => {
+
 			if (!formula.initialize) console.log(-1, formula);
 			formula.initialize();
 		});

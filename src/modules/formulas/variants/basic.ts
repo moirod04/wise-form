@@ -77,6 +77,7 @@ export class FormulaBasic {
 		const models = this.#parent.getModels(variables);
 
 		const empty = (models as any[]).every(model => [null, undefined, ''].includes(model.value));
+
 		if (empty) {
 			// If all models are empty, set the input to empty if exists.
 			if (formulaField) formulaField.set({ value: '' });
@@ -92,6 +93,7 @@ export class FormulaBasic {
 			if (this.#round && !isInvalidResult) result = Math.round(result)
 			this.#value = isInvalidResult ? this.#emptyValue : Number(result.toFixed(2));;
 			if (formulaField) formulaField.set({ value: this.#value });
+
 			this.#parent.trigger('change');
 		} catch (e) {
 			console.log('formula', this.name, this.formula, params);

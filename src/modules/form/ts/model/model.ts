@@ -4,14 +4,13 @@ import { BaseWiseModel } from './base';
 import { PluginsManager } from './plugins';
 
 export /*bundle*/
-class FormModel extends BaseWiseModel {
+	class FormModel extends BaseWiseModel {
 	#childWrappers: number = 0;
 
 	#specs;
 	get specs() {
 		return this.#specs;
 	}
-
 	#plugins: PluginsManager;
 	get plugins() {
 		return this.#plugins;

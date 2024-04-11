@@ -15,6 +15,7 @@ export class PluginsManager extends ReactiveModel<PluginsManager> {
 	constructor(model) {
 		super();
 		this.#model = model;
+
 		globalThis.f = model;
 		this.initialize();
 	}
