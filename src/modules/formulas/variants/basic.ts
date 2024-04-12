@@ -84,12 +84,7 @@ export class FormulaBasic {
 			this.#value = undefined;
 			return;
 		}
-		Object.entries(params).forEach(([key, value]: any[]) => {
-			params[key] =
-				!!value && typeof value === 'string' && value.includes('%')
-					? value.replaceAll('%', '').replaceAll('.', '*').replaceAll(',', '.').replaceAll('*', ',')
-					: value;
-		});
+
 		try {
 			let result = models.length === 1 ? models[0].value : parse(this.formula as string).evaluate(params);
 			const isInvalidResult = [-Infinity, Infinity, undefined, null, NaN].includes(result);

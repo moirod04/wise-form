@@ -173,7 +173,7 @@ export /*bundle */ class FormulaManager extends ReactiveModel<FormulaManager> {
 			if (!element)
 				throw new Error(`Field ${value} used in formula ${this.name}, not found in form ${form.name}, `);
 
-			params[value] = [undefined, ''].includes(element.value) ? 0 : element.value;
+			params[value] = [undefined, '', null, NaN].includes(element.value) ? 0 : element.value;
 		};
 		variables.forEach(build);
 
