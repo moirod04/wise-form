@@ -40,16 +40,16 @@ export class FormulaBasic {
 	#variables: string[] = [];
 	get variables() {
 		return this.#variables;
-	};
+	}
 
-	#round: boolean
+	#round: boolean;
 
 	#parent: FormulaManager;
 	constructor(parent, plugin, specs) {
 		this.#parent = parent;
 		this.#plugin = plugin;
 		this.#specs = specs;
-		this.#round = specs.round
+		this.#round = specs.round;
 		if (this.#specs.emptyValue) this.#emptyValue = this.#specs.emptyValue;
 	}
 
@@ -85,13 +85,16 @@ export class FormulaBasic {
 			return;
 		}
 		Object.entries(params).forEach(([key, value]: any[]) => {
-			params[key] = !!value && typeof value === "string" && value.includes("%") ? value.replaceAll('%', '').replaceAll('.', '*').replaceAll(',', '.').replaceAll('*', ',') : value
-		})
+			params[key] =
+				!!value && typeof value === 'string' && value.includes('%')
+					? value.replaceAll('%', '').replaceAll('.', '*').replaceAll(',', '.').replaceAll('*', ',')
+					: value;
+		});
 		try {
 			let result = models.length === 1 ? models[0].value : parse(this.formula as string).evaluate(params);
-			const isInvalidResult = [-Infinity, Infinity, undefined, null, NaN].includes(result)
-			if (this.#round && !isInvalidResult) result = Math.round(result)
-			this.#value = isInvalidResult ? this.#emptyValue : Number(result.toFixed(2));;
+			const isInvalidResult = [-Infinity, Infinity, undefined, null, NaN].includes(result);
+			if (this.#round && !isInvalidResult) result = Math.round(result);
+			this.#value = isInvalidResult ? this.#emptyValue : Number(result.toFixed(2));
 			if (formulaField) formulaField.set({ value: this.#value });
 
 			this.#parent.trigger('change');

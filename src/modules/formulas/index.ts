@@ -15,7 +15,6 @@ type ParserData = {
 	[key: string]: any;
 };
 export /*bundle */ class FormulaManager extends ReactiveModel<FormulaManager> {
-	private static instances: Map<string, any> = new Map();
 	#lexer = new Lexer(true);
 
 	#tokens: Token[];
@@ -188,12 +187,8 @@ export /*bundle */ class FormulaManager extends ReactiveModel<FormulaManager> {
 	 * @returns
 	 */
 	static async create(plugin, specs) {
-		if (FormulaManager.instances.has(specs.name)) {
-			return FormulaManager.instances.get(specs.name);
-		}
-
 		const instance = new FormulaManager(plugin, specs);
-		FormulaManager.instances.set(specs.name, instance);
+		// FormulaManager.instances.set(plugin.form.name, instance);
 		return instance;
 	}
 }
