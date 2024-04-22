@@ -117,7 +117,6 @@ export class FormulaPerValue {
 			formulaField && formulaField.set({ value: this.#value });
 			this.#parent.trigger('change');
 		} catch (e) {
-			console.log('formula', this.name, formula.formula, params);
 			console.log(e);
 			throw new Error('Error calculating the formula');
 		}

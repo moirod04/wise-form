@@ -9,6 +9,7 @@ export class EvaluationsManager {
 		},
 		different: (value, comparisonValue) => value != comparisonValue,
 		hasValue: value => ![undefined, null, ''].includes(value),
+		empty: value => [undefined, null, ''].includes(value),
 		lessOrEqual: (value, comparisonValue) => Number(value) <= Number(comparisonValue),
 		greaterOrEqual: (value, comparisonValue) => Number(value) >= Number(comparisonValue),
 	};

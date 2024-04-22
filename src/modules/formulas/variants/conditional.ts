@@ -1,4 +1,5 @@
 import type { FormulaManager } from '..';
+import { conditionsTypes } from '../helpers/condition-types';
 import { EvaluationsManager } from '../helpers/evaluations';
 import { EvaluatedFormula, FormulaObserver, IComplexCondition, IConditionalField } from '../types/formulas';
 import { parse } from 'mathjs';
@@ -70,22 +71,34 @@ export class FormulaConditional {
 	}
 
 	evaluate() {
-
 		const formula = <IComplexCondition>this.#specs.formula;
-		let evaluatedFormula = { formula: formula.base }; // Utiliza la fórmula base por defecto
-		if (formula.conditions && formula.conditions.length > 0) {
+		let evaluatedFormula: any = { formula: formula.base }; // Use the base formula by default
+		if (formula.conditions) {
 			for (const condition of formula.conditions) {
-				//	 Recopila los valores de los campos especificados en esta condición
-				const fieldValues = condition.fields.map(fieldName => {
-					const field = this.#fields.find(f => f.name === fieldName);
-					return field ? field.value : this.#emptyValue;
-				});
-
-				const conditionMet = EvaluationsManager.validateAny(condition.condition, fieldValues);
+				let conditionMet = false;
+				if (condition.conditions) {
+					// If there are nested conditions, all must be met
+					conditionMet = condition.conditions.every((subCondition) => {
+						const fieldValues = subCondition.fields.map(fieldName => {
+							const field = this.#fields.find(f => f.name === fieldName);
+							return field ? field.value : this.#emptyValue;
+						});
+						return EvaluationsManager.validateAll(subCondition.condition, fieldValues, subCondition.value)
+					});
+				} else {
+					const fieldValues = condition.fields.map(fieldName => {
+						const field = this.#fields.find(f => f.name === fieldName);
+						return field ? field.value : this.#emptyValue;
+					});
+					const conditionType = !!condition.type && conditionsTypes[condition.type] ? conditionsTypes[condition.type] : conditionsTypes.some;
+					// Check if any of the specified fields meet the condition
+					conditionMet = EvaluationsManager[conditionType](condition.condition, fieldValues, condition.value);
+				}
 
 				if (conditionMet) {
-					evaluatedFormula = { formula: condition.formula };
-					break; // Si se cumple una condición, no es necesario evaluar las restantes
+					evaluatedFormula.formula = condition.formula;
+					evaluatedFormula.fi = condition
+					break;
 				}
 			}
 		}
@@ -100,6 +113,7 @@ export class FormulaConditional {
 		 * can change the formula to be applied
 		 */
 		const formula = this.evaluate();
+
 		// todo: Review if this section can be replaced by formulaManager.variables property.
 		const { tokens } = this.#parent.getParser(formula);
 		const variables = tokens.filter(token => token.type === 'variable').map(item => item.value);

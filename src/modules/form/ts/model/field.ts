@@ -50,7 +50,7 @@ export class FormField extends ReactiveModel<IFormField> {
 		const props = this.getProperties();
 		return {
 			...props,
-			disabled: this.disabled,
+			disabled: this.#disabled,
 		};
 	}
 
@@ -62,7 +62,8 @@ export class FormField extends ReactiveModel<IFormField> {
 	 * @param {Object} params - Construction parameters including the parent form model and field specifications.
 	 */
 	constructor({ parent, specs }: { parent; specs: IFormFieldProps }) {
-		let { properties, ...props } = specs;
+
+		let { properties, disabled, ...props } = specs;
 
 		super({
 			...props,
@@ -82,11 +83,8 @@ export class FormField extends ReactiveModel<IFormField> {
 				...properties,
 			],
 		});
-		function generarNumeroAleatorio() {
-			return Math.floor(Math.random() * (1000000 - 10000 + 1)) + 10000;
-		}
 
-		this.__instanceID = `${specs.name}.${generarNumeroAleatorio()}`;
+		this.__instanceID = `${specs.name}.${this.generateRandomNumber()}`;
 
 		this.#specs = specs;
 		this.#parent = parent;
@@ -104,7 +102,11 @@ export class FormField extends ReactiveModel<IFormField> {
 			}
 			toSet[key] = props[key];
 		});
+		//	this.#disabled = disabled
 		this.set(toSet);
+	};
+	generateRandomNumber = () => {
+		return Math.floor(Math.random() * (1000000 - 10000 + 1)) + 10000;
 	}
 
 	/**
@@ -174,7 +176,6 @@ export class FormField extends ReactiveModel<IFormField> {
 					}, field passed in invalid settings of field "${this.name}"`
 				);
 			}
-
 			this.#disabled = props.disabled;
 		}
 	}
