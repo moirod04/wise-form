@@ -5,7 +5,7 @@ import { PendingPromise } from '@beyond-js/kernel/core';
 import { IWrapperFormModelProps } from './types/wrapped-form-model-props';
 
 export /*bundle*/
-class WrappedFormModel extends ReactiveModel<WrappedFormModel> {
+	class WrappedFormModel extends ReactiveModel<WrappedFormModel> {
 	// Holds the wrapper's specific settings.
 	#settings;
 	get settings() {

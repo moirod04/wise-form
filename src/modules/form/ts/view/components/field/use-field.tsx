@@ -24,6 +24,7 @@ export function useField(model, field) {
 	/**
 	 * It's necessary to change the field spread.
 	 */
+
 	const attrs = { value, ...attributes, onChange };
 
 	return { attrs };

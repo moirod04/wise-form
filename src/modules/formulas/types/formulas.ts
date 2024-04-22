@@ -13,6 +13,8 @@ export interface IFormulaCondition {
 	condition: 'hasValue' | 'upper' | 'lower' | 'equal' | 'different' | 'between' | 'lessOrEqual' | 'greaterOrEqual';
 	value?: string | number | [number, number];
 	formula: string;
+	conditions?: IConditionalField[],
+	fields?: string[]
 }
 
 type FormulaFields = string | string[];
@@ -25,7 +27,9 @@ export interface IConditionalField {
 	values?: [EvaluatedFormula];
 	conditions?: IFormulaCondition[];
 	fields?: string[];
-	formula?: string
+	formula?: string;
+	type?: string,
+	value: string | number
 }
 
 export interface IComplexCondition {
