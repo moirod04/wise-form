@@ -206,6 +206,42 @@ class FormModel extends BaseWiseModel {
 		return this;
 	}
 
+	hide = (fields: string[]) => {
+		fields.forEach(field => {
+			const instance = this.getField(field);
+			if (!instance) throw new Error(`Field ${field} does not exist in form ${this.name}`);
+
+			instance.hide();
+		});
+	};
+
+	show = (fields: string[]) => {
+		fields.forEach(field => {
+			const instance = this.getField(field);
+			if (!instance) throw new Error(`Field ${field} does not exist in form ${this.name}`);
+
+			instance.show();
+		});
+	};
+
+	disable = (fields: string[]) => {
+		fields.forEach(field => {
+			const instance = this.getField(field);
+			if (!instance) throw new Error(`Field ${field} does not exist in form ${this.name}`);
+
+			instance.disabled = true;
+		});
+	};
+
+	enable = (fields: string[]) => {
+		fields.forEach(field => {
+			const instance = this.getField(field);
+			if (!instance) throw new Error(`Field ${field} does not exist in form ${this.name}`);
+
+			instance.disabled = false;
+		});
+	};
+
 	static create = settings => {
 		const properties = settings.fields.map(item => item.name);
 		const values = settings.values || {};

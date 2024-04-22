@@ -62,7 +62,6 @@ export class FormField extends ReactiveModel<IFormField> {
 	 * @param {Object} params - Construction parameters including the parent form model and field specifications.
 	 */
 	constructor({ parent, specs }: { parent; specs: IFormFieldProps }) {
-
 		let { properties, disabled, ...props } = specs;
 
 		super({
@@ -104,10 +103,10 @@ export class FormField extends ReactiveModel<IFormField> {
 		});
 		//	this.#disabled = disabled
 		this.set(toSet);
-	};
+	}
 	generateRandomNumber = () => {
 		return Math.floor(Math.random() * (1000000 - 10000 + 1)) + 10000;
-	}
+	};
 
 	/**
 	 * Performs initial setup based on the field's specifications, setting up validation, default values, and any specified dynamic behavior.
@@ -172,7 +171,8 @@ export class FormField extends ReactiveModel<IFormField> {
 
 			if (!allValid) {
 				throw new Error(
-					`the field ${allValid} does not exist in the form ${this.#parent.name
+					`the field ${allValid} does not exist in the form ${
+						this.#parent.name
 					}, field passed in invalid settings of field "${this.name}"`
 				);
 			}
@@ -222,4 +222,18 @@ export class FormField extends ReactiveModel<IFormField> {
 			if (updated) this.trigger('change', this);
 		}
 	}
+
+	hide = () => {
+		if (!this.className) this.className = '';
+		const isHidden = this.className.includes('hidden');
+		const cls = isHidden ? this.className : `${this.className} hidden`;
+		if (cls !== this.className) this.set({ className: cls });
+	};
+
+	show = () => {
+		if (!this.className) this.className = '';
+		const isHidden = this.className.includes('hidden');
+		const cls = isHidden ? this.className.replaceAll(/\bhidden\b/g, '').trim() : this.className;
+		if (cls !== this.className) this.set({ className: cls });
+	};
 }
