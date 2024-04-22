@@ -4,7 +4,6 @@ import { RowFieldContainer } from '../rows/row-container';
 
 export function Containers() {
 	const {
-		items,
 		rows,
 		model,
 		template: { styles },

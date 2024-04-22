@@ -4,8 +4,7 @@ import { SelectionField } from './selection';
 import { ControlFieldContainer } from './container';
 import { useWiseFormContext } from '../../context';
 import { WiseFormField } from '../../../interfaces/interfaces';
-import type { FormModel } from '../../../model/model';
-import type { WrappedFormModel } from '../../../model/wrapper';
+import type { FormModel, WrappedFormModel } from '@bgroup/wise-form/models';
 import { useField } from './use-field';
 
 type WiseFormFieldControlProps = {

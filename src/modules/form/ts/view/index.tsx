@@ -1,7 +1,6 @@
 import React from 'react';
 import { useModel } from './hooks/use-model';
 import { WiseFormContext } from './context';
-import { useTemplate } from './hooks/use-template';
 import { useTypes } from './hooks/use-types';
 
 import { IWiseFormSpecs } from '../interfaces/wise-form-specs';

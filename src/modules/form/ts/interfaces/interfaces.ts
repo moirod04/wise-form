@@ -1,5 +1,4 @@
-import { FormField } from '../model/field';
-import { WrappedFormModel } from '../model/wrapper';
+import type { FormField, WrappedFormModel } from '@bgroup/wise-form/models';
 
 // Interface for individual form field elements
 export /*bundle*/ type WiseFormField = (FormField | WrappedFormModel)[];

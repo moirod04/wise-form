@@ -1,4 +1,4 @@
-import type { FormModel } from '../model/model';
+import type { FormModel } from '@bgroup/wise-form/models';
 import { IFormSettings } from './settings';
 
 export /*bundle */ interface IWiseFormSpecs {

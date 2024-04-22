@@ -3,7 +3,7 @@ import { useWiseFormContext } from '../../context';
 
 export function useField(model, field) {
 	const fieldModel = model.getField(field?.name);
-	const { formTypes, values } = useWiseFormContext();
+	const { values } = useWiseFormContext();
 
 	const value = fieldModel?.value ?? values[field?.name];
 	const [attributes, setAttributes] = React.useState(fieldModel?.attributes);

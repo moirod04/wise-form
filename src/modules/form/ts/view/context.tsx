@@ -1,6 +1,5 @@
 import React from 'react';
-
-import type { FormModel } from '../model/model';
+import type { FormModel } from '@bgroup/wise-form/models';
 export interface IFormContext {
 	model?: FormModel;
 	name?: string;

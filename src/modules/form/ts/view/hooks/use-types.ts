@@ -1,10 +1,10 @@
-import React, { useMemo } from 'react';
+import React from 'react';
 import { WFSettings } from '@bgroup/wise-form/settings';
 import { SelectionField } from '../components/field/selection';
 import { Input, Textarea } from 'pragmate-ui/form';
 
 export function useTypes(types) {
-	return useMemo(() => {
+	return React.useMemo(() => {
 		const defaultTypes = {
 			checkbox: SelectionField,
 			radio: SelectionField,

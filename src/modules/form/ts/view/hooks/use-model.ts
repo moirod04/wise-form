@@ -1,5 +1,5 @@
 import React from 'react';
-import { FormModel } from '../../model/model';
+import { FormModel } from '@bgroup/wise-form/models';
 import { useTemplate } from './use-template';
 
 export function useModel(settings, form?: FormModel) {
