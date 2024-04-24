@@ -1,0 +1,65 @@
+
+.jview-comments {
+	height: 100%;
+}
+.form-jview-container {
+	&.with-header {
+		.jview-header {
+			border-radius: 4px 4px 0px 0px;
+			background: var(--surface-variant) 0% 0% no-repeat padding-box;
+			background: #e5e1ec 0% 0% no-repeat padding-box;
+			box-shadow: none;
+			padding: 12px 15px;
+			height: 41px;
+
+			h3 {
+				margin: 0;
+				font-size: var(--font-size);
+			}
+		}
+	}
+	.container-comments.form-comments {
+		padding: .5rem .5rem 0rem .5rem;
+		height: 100%;
+		gap: .5rem;
+		border: none;
+		.header-comments {
+			border: none;
+			display: flex;
+			padding: 8px;
+			flex-direction: row;
+			align-items: center;
+			button.pui-button {
+				margin: 0;
+			}
+		}
+		.list-entries {
+			min-height: 100px;
+			border: 1px solid var(--outline);
+			border-radius: var(--border-primary);
+		}
+
+		.empty-comments {
+			font-size: var(--font-size);
+			padding: 0px;
+			margin: 0 0 8px;
+			background: var(--background);
+		}
+
+		.beauty-modal.comment-managment {
+			&.delete-comment {
+				.modal-content {
+					min-height: unset;
+					height: unset;
+				}
+			}
+
+			.modal-content {
+				width: 479px;
+				height: -webkit-fit-content;
+				height: -moz-fit-content;
+				height: fit-content;
+			}
+		}
+	}
+}

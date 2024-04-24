@@ -1,0 +1,36 @@
+.request-form {
+	.beauty-modal.modal-sgs {
+		.modal-content {
+			.content {
+				padding: 15px;
+			}
+		}
+
+		&.sm {
+			.modal-content {
+				overflow-y: unset;
+				max-width: 500px;
+				max-height: 80%;
+				width: 100%;
+			}
+		}
+
+		&.md {
+			.modal-content {
+				max-width: 800px;
+				max-height: 80%;
+				width: 100%;
+			}
+		}
+		&.lg .modal-content {
+			max-width: 1100px;
+			max-height: 80%;
+			width: 100%;
+		}
+		&.add-article .modal-content .content {
+			display: flex;
+			flex-direction: column;
+			gap: 16px;
+		}
+	}
+}

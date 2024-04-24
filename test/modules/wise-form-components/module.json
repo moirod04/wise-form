@@ -1,0 +1,28 @@
+{
+  "name": "test/wise-form-components",
+  "widget": {
+    "route": "/components",
+    "is": "page",
+    "scss": {
+      "path": "/scss",
+      "files": [
+        "*"
+      ]
+    },
+    "ts": {
+      "path": "/ts",
+      "files": [
+        "*"
+      ]
+    },
+    "readme": {
+      "path": "/md",
+      "files": [
+        "*"
+      ]
+    },
+    "element": {
+      "name": "wise-form-components"
+    }
+  }
+}

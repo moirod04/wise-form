@@ -1,0 +1,24 @@
+.request-form {
+	.pui-input.percentage {
+		input {
+			text-align: right;
+		}
+		.symbol-percent {
+			display: none;
+			position: absolute;
+			right: 8px;
+			top: 27px;
+		}
+		&.padding-percent {
+			input {
+				padding-right: 19px;
+			}
+			.symbol-percent {
+				display: inline;
+			}
+		}
+		&.percent-right .symbol-percent {
+			top: 8px;
+		}
+	}
+}

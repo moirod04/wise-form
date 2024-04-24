@@ -1,0 +1,12 @@
+.pui-input.currency {
+	input {
+		color: var(--primary);
+		text-align: right;
+	}
+
+	&.default-text {
+		input {
+			color: var(--on-surface);
+		}
+	}
+}

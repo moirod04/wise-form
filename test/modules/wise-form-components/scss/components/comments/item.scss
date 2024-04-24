@@ -1,0 +1,61 @@
+.container-comments {
+	min-height: 100px;
+	max-height: 380px;
+
+	.content.list-items {
+		overflow: hidden;
+	}
+}
+
+.empty-jview.pui-empty-section .content {
+	border-radius: var(--border-radius-base);
+}
+.container-comments.form {
+
+	.list-entries {
+		overflow: inherit;
+		.comment-item-list {
+			display: flex;
+			align-items: center;
+			justify-content: space-between;
+
+			.comment-content {
+				padding: 0.5rem;
+				width: 100%;
+
+				.header {
+					display: flex;
+					gap: 0.5rem;
+					align-items: center;
+
+					.username {
+						font-size: var(--font-size);
+						padding: 0;
+						font-family: var(--font-family);
+						font-weight: bold;
+					}
+					.time-created {
+						color: var(--outline);
+						font-size: var(--font-size);
+
+						&::first-letter {
+							text-transform: capitalize;
+						}
+					}
+				}
+
+				.comment {
+					margin: 0;
+					font-size: var(--font-size);
+					font-family: var(--font-family);
+				}
+			}
+		}
+		:nth-child(odd).comment-item-list {
+			background-color: var(--surface-variant);
+		}
+		:nth-child(even).comment-item-list {
+			background-color: var(--surface);
+		}
+	}
+}

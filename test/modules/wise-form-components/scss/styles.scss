@@ -1,0 +1,13 @@
+.page__container {
+	display: flex;
+	padding: 20px;
+	max-width: 1084px;
+	margin: 20px auto;
+	flex-direction: column;
+	background: var(--surface);
+	border: 1px solid var(--outline);
+	border-radius: var(--border-radius-base);
+	display: grid;
+	grid-template-columns: 200px 1fr;
+	grid-gap: 1rem;
+}

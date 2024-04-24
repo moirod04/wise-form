@@ -1,0 +1,44 @@
+.multi-input-traffic-light {
+	label {
+		font-weight: bold;
+		min-width: 8.75rem;
+		display: flex;
+		align-items: center;
+		color: var(--on-surface-variant);
+		font-size: var(--font-size-forms);
+	}
+
+	&.left-label {
+		display: grid;
+		align-items: center;
+		gap: 0.5rem;
+	}
+	&.multi-input-traffic-light {
+		.inputs {
+			display: grid;
+			grid-template-columns: repeat(3, 1fr);
+		}
+		&__two {
+			.inputs::before {
+				content: '';
+			}
+		}
+		&__two--after {
+			.inputs::before {
+				content: '';
+			}
+		}
+		&__one .inputs {
+			display: grid;
+			grid-template-columns: repeat(2, 1fr);
+			width: 100%;
+		}
+		&__one:not(:has(.container__traffic-light)) .inputs::after {
+			content: '';
+		}
+	}
+	.inputs {
+		display: flex;
+		gap: 1rem;
+	}
+}

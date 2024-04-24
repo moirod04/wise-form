@@ -1,0 +1,30 @@
+.border-traffic-light {
+	min-height: 20px;
+	min-width: 20px;
+	-ms-border-radius: 50%;
+	-moz-border-radius: 50%;
+	-webkit-border-radius: 50%;
+	-o-border-radius: 50%;
+	border-radius: 50%;
+	margin: 0 auto 5px;
+
+	&.grey {
+		background-color: grey;
+		background: radial-gradient(circle at 65% 15%, #ccc 3%, #606060 60%, grey 100%);
+	}
+
+	&.green {
+		background-color: green;
+		background: radial-gradient(circle at 65% 15%, #b8f7c1 3%, #1e5f11 60%, green 100%);
+	}
+
+	&.yellow {
+		background-color: #ffee00;
+		background: radial-gradient(circle at 65% 15%, #faf2b0 3%, #928a1a 60%, yellow 100%);
+	}
+
+	&.red {
+		background-color: red;
+		background: radial-gradient(circle at 65% 15%, #f7a7a7 3%, #aa0202 60%, #ff0000 100%);
+	}
+}
