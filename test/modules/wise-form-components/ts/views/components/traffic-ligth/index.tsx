@@ -11,7 +11,6 @@ export /* bundle */ function InputTrafficLight({ name, ...props }: IProps) {
 
 
 	const { model } = useWiseFormContext();
-	console.log("🚀 ~ InputTrafficLight ~ model:", model)
 	const instance = model.getField(name);
 	const { className, isPercent } = instance.specs
 	const value = formatToDisplay(instance.value, isPercent);

@@ -9,7 +9,6 @@ export function AsideItem({ item }) {
 	const onClick = () => {
 		store.setForm(item);
 	};
-		console.log("🚀 ~ onClick ~ item:", item)
 
 	const attrs = { variant: 'primary', bordered: true, onClick };
 

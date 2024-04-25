@@ -39,8 +39,7 @@ export class StoreManager extends ReactiveModel<StoreManager> {
 	}
 
 	async setForm(item) {
-		console.log(this.#instances);
-		if (this.#instances.has(item.name)) {
+			if (this.#instances.has(item.name)) {
 			this.#active = this.#instances.get(item.name);
 			return this.trigger('change');
 		}
