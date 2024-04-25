@@ -10,7 +10,6 @@ import { Button } from 'pragmate-ui/components';
 import { select } from './implementations/select';
 import { trafficLight } from './implementations/input-traffic-ligth';
 
-type FormItem = Record<string, [string]>;
 export class StoreManager extends ReactiveModel<StoreManager> {
 	#forms: Map<string, FormModel> = new Map();
 	#active: FormModel;
@@ -18,8 +17,8 @@ export class StoreManager extends ReactiveModel<StoreManager> {
 		return this.#active;
 	}
 	#instances = new Map();
-
 	get forms() {
+		// estos son los componentes
 		return {
 			currencyImplementation,
 			totalizer,
@@ -33,13 +32,14 @@ export class StoreManager extends ReactiveModel<StoreManager> {
 
 	constructor() {
 		super();
-		this.setForm(this.forms.select);
+		this.setForm(this.forms.currencyImplementation); // Aqui lo cambias
 		WFSettings.setFields({
 			button: Button,
 		});
 	}
 
 	async setForm(item) {
+		console.log(this.#instances);
 		if (this.#instances.has(item.name)) {
 			this.#active = this.#instances.get(item.name);
 			return this.trigger('change');

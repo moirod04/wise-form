@@ -1,25 +1,32 @@
 export const select = {
-    type: 'wrapper',
-    control: 'div',
-    name: 'selectExample',
+    name: 'formSelect',
     template: ['1fr'],
     title: 'Select',
     fields: [
         {
-            name: 'select',
-            type: 'select',
-            label: 'Select Example ',
-            placeholder: 'Seleccione..',
-            options: [
+            type: 'wrapper',
+            control: 'div',
+            name: 'selectExample',
+            template: ['1fr'],
+            title: 'Select',
+            fields: [
                 {
-                    value: 'yes',
-                    label: 'Si',
+                    name: 'select',
+                    type: 'select',
+                    label: 'Select Example ',
+                    placeholder: 'Seleccione..',
+                    options: [
+                        {
+                            value: 'yes',
+                            label: 'Si',
+                        },
+                        {
+                            value: 'no',
+                            label: 'No',
+                        },
+                    ],
                 },
-                {
-                    value: 'no',
-                    label: 'No',
-                },
-            ],
+            ]
         },
     ]
 };

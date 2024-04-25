@@ -3,6 +3,7 @@ import { Modal } from 'pragmate-ui/modal';
 import { Button } from 'pragmate-ui/components';
 import { useWiseFormContext } from '@bgroup/wise-form/form';
 import { useBinder } from '@beyond-js/react-18-widgets/hooks';
+
 export /*bundle*/ function AlertModal(props): JSX.Element {
 	const { model } = useWiseFormContext();
 	const instance = model.getField(props.name);

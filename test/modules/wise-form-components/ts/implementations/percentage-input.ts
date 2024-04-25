@@ -1,7 +1,5 @@
 export const percentage = {
-    type: 'wrapper',
-    control: 'div',
-    name: 'percentageExample',
+    name: 'formPercentage',
     template: ['1fr'],
     title: 'Percentage',
     fields: [

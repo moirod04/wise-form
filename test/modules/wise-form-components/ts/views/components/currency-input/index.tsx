@@ -6,7 +6,8 @@ import { useWiseFormContext } from '@bgroup/wise-form/form';
 
 export /*bundle*/ const CurrencyInput = props => {
 	const { model } = useWiseFormContext();
-	const instance = model.getField(props.name);
+	const instance = model?.getField(props.name);
+	console.log("🚀 ~ /*bundle*/CurrencyInput ~ instance:", props.name ,instance)
 	let {
 		decimalsLimit,
 		noDecimals,
