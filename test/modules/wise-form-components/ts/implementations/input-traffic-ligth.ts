@@ -13,7 +13,7 @@ export const trafficLight = {
                     name: 'porcentajeDerechoAutor',
                     label: '% d. autor: ',
                     type: 'percentage',
-                    properties: ['condition', 'isChange'],
+                    properties: ['condition', 'isChange'], 
                     removeValueWhenFocus: false,
                     isSetDefaultValue: false,
                     toFixed: true,
@@ -21,17 +21,16 @@ export const trafficLight = {
                 },
                 {
                     type: 'trafficLight',
-                    value: '',
                     name: 'PorcentajeDA',
                     value: 0,
                     properties: ['condition'],
                     isPercent: true,
-                    condition: {
-                        parameter: 33,
+                    condition: { // La condition que hace que dependa el color del TrafficLight, depende principalmente de los parametros y values. 
+                        parameter: 33, 
                         red: '<= -2%',
                         yellow: '< 0 y > - 2%',
                         green: '>= 0%',
-                        values: ['porcentajeDerechoAutor'],
+                        values: ['porcentajeDerechoAutor'], // En values esta los nombres de los fields que depende
                     },
                 },
             ],

@@ -1,6 +1,6 @@
 import React from 'react';
 import { useCollapsibleContext } from './context';
-import { useDinamycFormContext } from '../../context';
+import { useDinamycFormContext } from '../../../context';
 
 interface ICollapsibleProps {
 	children: React.ReactNode;

@@ -3,7 +3,7 @@ import { CollapsibleContext } from './context';
 import { CollapsibleHeader } from './header';
 import { WrappedForm } from '@bgroup/wise-form/form';
 import { CollapsibleContent } from './content';
-import { useDinamycFormContext } from '../../context';
+import { useDinamycFormContext } from '../../../context';
 import { useBinder } from '@beyond-js/react-18-widgets/hooks';
 
 export /*bundle */ function DependentCollapsible({ model }: { model }): JSX.Element {

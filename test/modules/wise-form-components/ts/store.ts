@@ -4,11 +4,12 @@ import { currencyImplementation } from './implementations/currency';
 import { totalizer } from './implementations/totalizer';
 import { dependentCollapsible } from './implementations/dependent-collapsible';
 import { WFSettings } from '@bgroup/wise-form/settings';
-import { modal } from './implementations/modal';
 import { percentage } from './implementations/percentage-input';
 import { Button } from 'pragmate-ui/components';
 import { select } from './implementations/select';
 import { trafficLight } from './implementations/input-traffic-ligth';
+import { modal } from './implementations/modal';
+import { alertModal } from './implementations/alert-modal';
 
 export class StoreManager extends ReactiveModel<StoreManager> {
 	#forms: Map<string, FormModel> = new Map();
@@ -26,13 +27,14 @@ export class StoreManager extends ReactiveModel<StoreManager> {
 			modal,
 			percentage,
 			select,
-			trafficLight
+			trafficLight,
+			alertModal
 		};
 	}
 
 	constructor() {
 		super();
-		this.setForm(this.forms.currencyImplementation); // Aqui lo cambias
+		this.setForm(this.forms.alertModal); // Aqui lo cambia
 		WFSettings.setFields({
 			button: Button,
 		});

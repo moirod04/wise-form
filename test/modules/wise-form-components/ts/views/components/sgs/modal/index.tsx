@@ -1,6 +1,6 @@
 import React from 'react';
 import { WrappedForm } from '@bgroup/wise-form/form';
-import { useDinamycFormContext } from '../../context';
+import { useDinamycFormContext } from '../../../context';
 import { Modal as PUIModal } from 'pragmate-ui/modal';
 import { useBinder } from '@beyond-js/react-18-widgets/hooks';
 

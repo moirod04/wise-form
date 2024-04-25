@@ -1,7 +1,7 @@
 import React from 'react';
 import { WrappedForm } from '@bgroup/wise-form/form';
 import { v4 as uuid } from 'uuid';
-import { useDinamycFormContext } from '../../context';
+import { useDinamycFormContext } from '../../../context';
 import { useBinder } from '@beyond-js/react-18-widgets/hooks';
 import { useTotal } from './use-total';
 import { useWiseFormContext } from '@bgroup/wise-form/form';

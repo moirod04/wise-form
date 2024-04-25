@@ -2,7 +2,6 @@ import React from 'react';
 import { WiseForm } from '@bgroup/wise-form/form';
 import { useFormContext } from './context';
 import { useBinder } from '@beyond-js/react-18-widgets/hooks';
-import { Spinner } from 'pragmate-ui/components';
 interface ISettings {
 	[key: string]: any;
 }
@@ -15,7 +14,6 @@ function Main(): JSX.Element {
 	const title = `${active.name}`;
 	useBinder([store], () => setActive(store.active));
 	
-	/* if(!store.ready) return <Spinner type="primary" active/> */
 	return (
 		<main>
 			<h1>{title}</h1>

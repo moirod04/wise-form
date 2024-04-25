@@ -1,57 +1,82 @@
 export const modal = {
-    name: 'data',
-    type: 'wrapper',
+    name: 'form-modal',
     title: 'Modal',
-    template: ['1fr',],
+    template: ['1fr', '1fr'],
     fields: [
         {
             type: 'wrapper',
-            control: 'modal',
-            className: 'md ',
-            name: 'modalExample',
+            control: 'modal', // Indicamos en un wrapper que este sera el contenedor de la modal
+            name: 'modal-wrapper',
             properties: ['open'],
-            open: false,
-            title: 'Estructura de Articulo',
-            template: ['1fr', '1fr'],
+            className: 'sm',
+            title: 'Modal con Wrapper',
+            open: false, // Que este cerrada la modal por defecto
+            template: ['1fr'],
             fields: [
                 {
                     type: 'wrapper',
                     control: 'div',
-                    name: 'actions',
-                    template: [[2, '1fr 1fr']],
+                    name: 'sub-wrapper',
+                    template: ['1fr', '1fr'],
                     fields: [
                         {
-                            type: 'button',
-                            label: 'Aceptar',
-                            variant: 'primary',
-                            name: 'treeAcceptButton',
-                            className: 'form-button',
-                            onClick: [
-                                {
-                                    to: 'data.modalExample',
-                                    property: 'open',
-                                    value: false,
-                                },
-                                {
-                                    to: 'structureOfArt',
-                                },
-                            ],
+                            name: 'input-content',
+                            type: 'text',
+                            placeholder: 'input text'
                         },
                         {
-                            type: 'button',
-                            label: 'Cancelar',
-                            name: 'cancelStructureBtn',
-                            variant: 'secondary',
-                            className: 'form-button',
-                            onClick: [
+                            type: 'wrapper',
+                            name: 'content-buttons',
+                            control: 'div',
+                            template: [[3, '3fr 1fr 1fr']],
+                            fields: [
                                 {
-                                    to: 'data.modalExample',
-                                    property: 'open',
-                                    value: false,
+                                    type: 'wrapper',
+                                    control: 'div',
+                                    name: 'void',
+                                    template: [],
+                                    fields: [],
+                                },
+                                {
+                                    type: 'submit',
+                                    name: 'submit-button',
+                                    label: 'Aceptar',
+                                    className: 'form-button',
+                                    id: 'derive',
+                                    variant: 'primary',
+                                    
+                                },
+                                {
+                                    type: 'button',
+                                    name: 'cancel-button',
+                                    className: 'form-button',
+                                    variant: 'secondary',
+                                    label: 'Cerrar',
+                                    onClick: [
+                                        {
+                                            to: 'modal-wrapper', // Para la moodal
+                                            property: 'open',
+                                            value: false, // Indicamos que se cierre
+                                        },
+                                    ],
                                 },
                             ],
                         },
-                    ],
+                    ]
+                },
+            ],
+        },
+        {
+            type: 'button',
+            name: 'openModal',
+            label: 'open',
+            className: 'form-button',
+            variant: 'secondary',
+            onClick: [
+                {
+                    to: 'modal-wrapper', // Accion que llegara a la modal
+                    property: 'open', // Modificamos la propiedad open
+                    value: true, // Valor en true (abierto)
                 },
             ],
         },

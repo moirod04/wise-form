@@ -1,5 +1,5 @@
 import React from 'react';
-import { ReactSelect } from '../react-select/ts';
+import { ReactSelect } from '../../utils/react-select/ts';
 import { useWiseFormContext } from '@bgroup/wise-form/form';
 import { useBinder } from '@beyond-js/react-18-widgets/hooks';
 import { Icon } from 'pragmate-ui/icons';

@@ -1,12 +1,13 @@
-import { InputTrafficLight } from './components/traffic-ligth';
-import { Totalizer } from './components/totalizer';
-import { AlertModal } from './components/alert-modal';
-import { CurrencyInput } from './components/currency-input';
-import { DependentCollapsible } from './components/dependent-collapsible';
-import { Modal } from './components/modal';
-import { PercentageInput } from './components/percentage-input';
-import { Select } from './components/select';
-import { Div } from './components/div';
+import { InputTrafficLight } from './components/sgs/traffic-ligth';
+import { Totalizer } from './components/sgs/totalizer';
+import { AlertModal } from './components/sgs/alert-modal';
+import { CurrencyInput } from './components/sgs/currency-input';
+import { DependentCollapsible } from './components/sgs/dependent-collapsible';
+import { Modal } from './components/sgs/modal';
+import { PercentageInput } from './components/sgs/percentage-input';
+import { Select } from './components/sgs/select';
+import { Div } from './components/utils/div';
+import { Button } from './components/utils/button';
 
 export const types = {
     trafficLight: InputTrafficLight,
@@ -17,5 +18,7 @@ export const types = {
     select: Select,
     modal: Modal,
     percentage: PercentageInput,
-    div: Div
+    div: Div,
+    button: Button,
+    submit: Button,
 };

@@ -1,6 +1,6 @@
 import React from 'react';
 import { WrappedForm } from '@bgroup/wise-form/form';
-import { useFormContext } from '../../context';
+import { useFormContext } from '../../../context';
 
 export /*bundle*/ const Div = props => {
 	const { types } = useFormContext();
