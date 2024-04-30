@@ -50,6 +50,8 @@ export class FormField extends ReactiveModel<IFormField> {
 		return this.#specs;
 	}
 
+	#isReady: boolean = false;
+
 	get attributes() {
 		const props = this.getProperties();
 		return {
@@ -105,9 +107,9 @@ export class FormField extends ReactiveModel<IFormField> {
 			}
 			toSet[key] = props[key];
 		});
-		//	this.#disabled = disabled
 		this.set(toSet);
 	}
+
 	generateRandomNumber = () => {
 		return Math.floor(Math.random() * (1000000 - 10000 + 1)) + 10000;
 	};
@@ -117,6 +119,8 @@ export class FormField extends ReactiveModel<IFormField> {
 	 */
 	initialize = () => {
 		this.checkSettings(this.#specs);
+		const instance = this.#parent.form.getField(this.name);
+		instance.on("change", this.listenerEvents);
 	};
 
 	/**
@@ -132,10 +136,7 @@ export class FormField extends ReactiveModel<IFormField> {
 	/**
 	 * Listens to changes in sibling fields (specified in dynamic disabling logic) and updates its state accordingly.
 	 */
-	#listenSiblings = () => {
-		console.log("tu?");
-		this.triggerEvent("change");
-	};
+	#listenSiblings = () => this.triggerEvent("change");
 
 	/**
 	 * Checks and applies the field's settings, particularly for dynamic disabling, establishing listeners on related fields as necessary.
@@ -183,9 +184,6 @@ export class FormField extends ReactiveModel<IFormField> {
 			}
 			this.#disabled = props.disabled;
 		}
-
-		const instance = this.#parent.form.getField(this.name);
-		instance.on("change", this.listenerEvents);
 	}
 
 	/**
@@ -239,7 +237,11 @@ export class FormField extends ReactiveModel<IFormField> {
 	 * @returns
 	 */
 	listenerEvents = () => {
-		console.trace("listener", this.name, this);
+		if (!this.#isReady) {
+			this.#isReady = true;
+			return;
+		}
+
 		if (!this.specs?.events) {
 			const event = this.#getEvent(this.specs);
 			if (!event) return;
@@ -273,7 +275,7 @@ export class FormField extends ReactiveModel<IFormField> {
 	 * @param {*} value - The value to set the property to.
 	 * @returns {void}
 	 */
-	set(properties, init = true): void {
+	set(properties): void {
 		let updated = false;
 		try {
 			Object.keys(properties).forEach(prop => {
@@ -292,10 +294,7 @@ export class FormField extends ReactiveModel<IFormField> {
 		} catch (e) {
 			throw new Error(`Error setting properties: ${e}`);
 		} finally {
-			if (updated && !init) {
-				console.log("erestu?");
-				this.trigger("change", this);
-			}
+			if (updated) this.trigger("change", this);
 		}
 	}
 
