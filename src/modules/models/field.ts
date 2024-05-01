@@ -249,10 +249,11 @@ export class FormField extends ReactiveModel<IFormField> {
 			return;
 		}
 
-		const item = this.specs.events.find(record => record.value === this.value);
-		const event = this.#getEvent(item);
-		if (!item?.[event]) return;
-		this.#executeEvent(item[event]);
+		const event = this.#getEvent(this.specs.events);
+		if (!event) return;
+		const item = this.specs.events[event].hasOwnProperty(this.value) ? this.specs.events[event][this.value] : null;
+		if (!item) return;
+		this.#executeEvent(item);
 	};
 
 	/**
